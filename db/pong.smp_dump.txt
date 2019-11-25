@@ -1,0 +1,50 @@
+
+State Machine - |PONG|vga_ver_state
+Name vga_ver_state.vga_ver_D vga_ver_state.vga_ver_C vga_ver_state.vga_ver_B vga_ver_state.vga_ver_A 
+vga_ver_state.vga_ver_A 0 0 0 0 
+vga_ver_state.vga_ver_B 0 0 1 1 
+vga_ver_state.vga_ver_C 0 1 0 1 
+vga_ver_state.vga_ver_D 1 0 0 1 
+
+State Machine - |PONG|vga_hor_state
+Name vga_hor_state.vga_hor_D vga_hor_state.vga_hor_C vga_hor_state.vga_hor_B vga_hor_state.vga_hor_A 
+vga_hor_state.vga_hor_A 0 0 0 0 
+vga_hor_state.vga_hor_B 0 0 1 1 
+vga_hor_state.vga_hor_C 0 1 0 1 
+vga_hor_state.vga_hor_D 1 0 0 1 
+
+State Machine - |PONG|ball_dir
+Name ball_dir.NNW ball_dir.NW ball_dir.WNW ball_dir.W ball_dir.WSW ball_dir.SW ball_dir.SSW ball_dir.NO_DIR ball_dir.SE ball_dir.ESE ball_dir.E ball_dir.ENE ball_dir.NE ball_dir.NNE ball_dir.SSE 
+ball_dir.SSE 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+ball_dir.NNE 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 
+ball_dir.NE 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 
+ball_dir.ENE 0 0 0 0 0 0 0 0 0 0 0 1 0 0 1 
+ball_dir.E 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 
+ball_dir.ESE 0 0 0 0 0 0 0 0 0 1 0 0 0 0 1 
+ball_dir.SE 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 
+ball_dir.NO_DIR 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1 
+ball_dir.SSW 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1 
+ball_dir.SW 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 
+ball_dir.WSW 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1 
+ball_dir.W 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 
+ball_dir.WNW 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 
+ball_dir.NW 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 
+ball_dir.NNW 1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 
+
+State Machine - |PONG|\ball:new_dir
+Name \ball:new_dir.NNW \ball:new_dir.NW \ball:new_dir.WNW \ball:new_dir.W \ball:new_dir.WSW \ball:new_dir.SW \ball:new_dir.SSW \ball:new_dir.NO_DIR \ball:new_dir.SE \ball:new_dir.ESE \ball:new_dir.E \ball:new_dir.ENE \ball:new_dir.NE \ball:new_dir.NNE \ball:new_dir.SSE 
+\ball:new_dir.SSE 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+\ball:new_dir.NNE 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 
+\ball:new_dir.NE 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 
+\ball:new_dir.ENE 0 0 0 0 0 0 0 0 0 0 0 1 0 0 1 
+\ball:new_dir.E 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 
+\ball:new_dir.ESE 0 0 0 0 0 0 0 0 0 1 0 0 0 0 1 
+\ball:new_dir.SE 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 
+\ball:new_dir.NO_DIR 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1 
+\ball:new_dir.SSW 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1 
+\ball:new_dir.SW 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 
+\ball:new_dir.WSW 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1 
+\ball:new_dir.W 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 
+\ball:new_dir.WNW 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 
+\ball:new_dir.NW 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 
+\ball:new_dir.NNW 1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 

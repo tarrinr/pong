@@ -19,13 +19,15 @@ entity PONG is
     port (
 
         -- Inputs
-        CLK : in std_logic;
+        ADC_CLK_10 : in std_logic;
+        KEY        : in std_logic_vector(1 downto 0); -- 0: RST, 1: START
 
         -- Outputs
-        R :
-        G :
-        B :
-
+        VGA_R  : out std_logic_vector(3 downto 0);
+        VGA_G  : out std_logic_vector(3 downto 0);
+        VGA_B  : out std_logic_vector(3 downto 0);
+        VGA_HS : out std_logic;
+        VGA_VS : out std_logic
 
     );
 
@@ -42,20 +44,41 @@ architecture RTL of PONG is
     -- Types
     --
 
-    type color      is std_logic_vector(3 downto 0);
-    type reflection is (NO_REF, N_S, NNE_SSW, NE_SW, E_W, NNW_SSE, NW_SE);
-    type direction  is (NO_DIR, NNE, NE, ENE, E, ESE, SE, SSE, SSW, SW, WSW, W, WNW, NW, NNW);
-    type field_pos  is
-        record
-            x : integer range 0 to 599;
-            y : integer range 0 to 319;
-        end record;
+    type    direction          is (NO_DIR, NNE, NE, ENE, E, ESE, SE, SSE, SSW, SW, WSW, W, WNW, NW, NNW);
+    type    position           is record
+                                      x : integer range 0 to 639;
+                                      y : integer range 0 to 479;
+                                  end record;
+    type    vga_hor_state_type is (vga_hor_A, vga_hor_B, vga_hor_C, vga_hor_D);
+    type    vga_ver_state_type is (vga_ver_A, vga_ver_B, vga_ver_C, vga_ver_D);
+    subtype color              is std_logic_vector(3 downto 0);
+    subtype reflection         is std_logic_vector(2 downto 0);
 
 
     --
     -- Constants
     --
 
+    constant NO_REF  : reflection := "000";
+    constant N_S     : reflection := "001";
+    constant NNE_SSW : reflection := "010";
+    constant NE_SW   : reflection := "011";
+    constant E_W     : reflection := "100";
+    constant NNW_SSE : reflection := "101";
+    constant NW_SE   : reflection := "110";
+
+
+    --
+    -- Components
+    --
+
+    component pll
+	PORT
+	(
+		inclk0	: IN STD_LOGIC  := '0';
+		c0		: OUT STD_LOGIC 
+	);
+    end component;
 
 
     --
@@ -63,6 +86,7 @@ architecture RTL of PONG is
     --
 
     -- VGA
+    signal clk       : std_logic;
     signal line_num  : integer range 0 to 479;
     signal pixel_num : integer range 0 to 639;
     signal vga_en    : std_logic;
@@ -70,9 +94,16 @@ architecture RTL of PONG is
     signal v_en      : std_logic;
 
     -- Ball
-    signal ball_pos  : field_pos;
+    signal ball_pos  : position;
     signal ball_dir  : direction;
     signal ref       : reflection;
+    signal b_r       : color;
+    signal b_g       : color;
+    signal b_b       : color;
+
+    -- States
+    signal vga_hor_state : vga_hor_state_type;
+    signal vga_ver_state : vga_ver_state_type;
 
     -- line_1 outputs
     signal l1_r   : color;
@@ -116,125 +147,241 @@ begin
     -- Concurrent signal assignments
     --
 
-    R   <= l1_r   or l2_r   or l3_r   or l4_r   or l5_r   or l6_r;
-    G   <= l1_g   or l2_g   or l3_g   or l4_g   or l5_g   or l6_g;
-    B   <= l1_b   or l2_b   or l3_b   or l4_b   or l5_b   or l6_b;
-    ref <= l1_ref or l2_ref or l3_ref or l4_ref or l5_ref or l6_ref;
+    VGA_R  <= l1_r   or l2_r   or l3_r   or l4_r   or l5_r   or l6_r   or b_r;
+    VGA_G  <= l1_g   or l2_g   or l3_g   or l4_g   or l5_g   or l6_g   or b_g;
+    VGA_B  <= l1_b   or l2_b   or l3_b   or l4_b   or l5_b   or l6_b   or b_b;
+    ref    <= l1_ref or l2_ref or l3_ref or l4_ref or l5_ref or l6_ref;
+    vga_en <= h_en and v_en;
 
     --
     -- Processes
     --
 
     -- Ball position/direction, Moore FSM
-    ball : process (CLK) is
-        var
+        -- Inputs:   clk, KEY(0), ref, line_num, pixel_num
+        -- Outputs:  b_r, b_g, b_b, ball_pos, g1, g2
+        -- Internal: new_dir, new_pos, ball_dir, cnt
+    ball : process (clk) is
+        variable new_dir : direction := E;
+        variable new_pos : position  := (x => 320, y => 100);
     begin
+        if rising_edge(clk) then
+            if KEY(0) = '1' then
+                if vga_en = '1' then
+                    if (line_num = 0) and (pixel_num = 0) then
 
-        -- Position/direction
-        case ball_dir is
-            when NO_DIR =>
-                ball_pos <= ball_pos;
-                ball_dir <= NO_DIR;
-            when NNE    =>
-                case ref is
-                    when NO_REF  => ball_pos.x <= ball_pos.x + 2; ball_pos.y <= ball_pos.y - 4; ball_dir <= NNE;
-                    when N_S     => ball_pos.x <= ball_pos.x - 2; ball_pos.y <= ball_pos.y - 4; ball_dir <= NNW;
-                    when NNE_SSW => ball_pos.x <= ball_pos.x - 3; ball_pos.y <= ball_pos.y - 3; ball_dir <= NW;
-                    when NE_SW   => ball_pos.x <= ball_pos.x + 4; ball_pos.y <= ball_pos.y - 2; ball_dir <= ENE;
-                    when E_W     => ball_pos.x <= ball_pos.x + 2; ball_pos.y <= ball_pos.y + 4; ball_dir <= SSE;
-                    when NNW_SSE => ball_pos.x <= ball_pos.x - 3; ball_pos.y <= ball_pos.y - 3; ball_dir <= NW;
-                    when NW_SE   => ball_pos.x <= ball_pos.x - 4; ball_pos.y <= ball_pos.y + 2; ball_dir <= WSW;
-                    when others  => ball_pos.x <= ball_pos.x + 2; ball_pos.y <= ball_pos.y - 4; ball_dir <= NNE;
-                end case;
-            when NE     =>
-                case ref is
-                    when NO_REF  => ball_pos.x <= ball_pos.x + 3; ball_pos.y <= ball_pos.y - 3; ball_dir <= NE;
-                    when N_S     => ball_pos.x <= ball_pos.x - 3; ball_pos.y <= ball_pos.y - 3; ball_dir <= NW;
-                    when NNE_SSW => ball_pos.x <= ball_pos.x + 4; ball_pos.y <= ball_pos.y - 2; ball_dir <= ENE;
-                    when NE_SW   => ball_pos.x <= ball_pos.x + 3; ball_pos.y <= ball_pos.y - 3; ball_dir <= NE;
-                    when E_W     => ball_pos.x <= ball_pos.x + 3; ball_pos.y <= ball_pos.y + 3; ball_dir <= SE;
-                    when NNW_SSE => ball_pos.x <= ball_pos.x - 4; ball_pos.y <= ball_pos.y;     ball_dir <= W;
-                    when NW_SE   => ball_pos.x <= ball_pos.x - 4; ball_pos.y <= ball_pos.y + 4; ball_dir <= SW;
-                    when others  => ball_pos.x <= ball_pos.x + 3; ball_pos.y <= ball_pos.y - 3; ball_dir <= NE;
-                end case;
-            when ENE    =>
-                case ref is
-                    when NO_REF  => ball_pos.x <= ball_pos.x + 4; ball_pos.y <= ball_pos.y - 2; ball_dir <= ENE;
-                    when N_S     => ball_pos.x <= ball_pos.x - 4; ball_pos.y <= ball_pos.y - 2; ball_dir <= WNW;
-                    when NNE_SSW => ball_pos.x <= ball_pos.x - 2; ball_pos.y <= ball_pos.y - 4; ball_dir <= NNW;
-                    when NE_SW   => ball_pos.x <= ball_pos.x + 2; ball_pos.y <= ball_pos.y - 4; ball_dir <= NNE;
-                    when E_W     => ball_pos.x <= ball_pos.x + 4; ball_pos.y <= ball_pos.y + 2; ball_dir <= ESE;
-                    when NNW_SSE => ball_pos.x <= ball_pos.x - 4; ball_pos.y <= ball_pos.y + 2; ball_dir <= WSW;
-                    when NW_SE   => ball_pos.x <= ball_pos.x - 2; ball_pos.y <= ball_pos.y + 4; ball_dir <= SSW;
-                    when others  => ball_pos.x <= ball_pos.x + 4; ball_pos.y <= ball_pos.y - 2; ball_dir <= ENE;
-                end case;
-            when E      =>
-                case ref is
-                    when NO_REF  => ball_pos.x <= ball_pos.x + 4; ball_pos.y <= ball_pos.y;     ball_dir <= E;
-                    when N_S     => ball_pos.x <= ball_pos.x - 4; ball_pos.y <= ball_pos.y;     ball_dir <= W;
-                    when NNE_SSW => ball_pos.x <= ball_pos.x - 3; ball_pos.y <= ball_pos.y - 3; ball_dir <= NW;
-                    when NE_SW   => ball_pos.x <= ball_pos.x - 2; ball_pos.y <= ball_pos.y - 4; ball_dir <= NNW;
-                    when E_W     => ball_pos.x <= ball_pos.x + 4; ball_pos.y <= ball_pos.y - 2; ball_dir <= ENE;
-                    when NNW_SSE => ball_pos.x <= ball_pos.x - 4; ball_pos.y <= ball_pos.y + 4; ball_dir <= SW;
-                    when NW_SE   => ball_pos.x <= ball_pos.x - 2; ball_pos.y <= ball_pos.y + 4; ball_dir <= SSW;
-                    when others  => ball_pos.x <= ball_pos.x + 4; ball_pos.y <= ball_pos.y;     ball_dir <= E;
-                end case;
-            when ESE    =>
-                case ref is
-                    when NO_REF  => ball_pos.x <= ball_pos.x + 4; ball_pos.y <= ball_pos.y + 2; ball_dir <= ESE;
-                    when N_S     => ball_pos.x <= ball_pos.x - 4; ball_pos.y <= ball_pos.y + 2; ball_dir <= WSW;
-                    when NNE_SSW => ball_pos.x <= ball_pos.x - 4; ball_pos.y <= ball_pos.y - 2; ball_dir <= WNW;
-                    when NE_SW   => ball_pos.x <= ball_pos.x - 2; ball_pos.y <= ball_pos.y - 4; ball_dir <= NNW;
-                    when E_W     => ball_pos.x <= ball_pos.x + 4; ball_pos.y <= ball_pos.y - 2; ball_dir <= ENE;
-                    when NNW_SSE => ball_pos.x <= ball_pos.x - 2; ball_pos.y <= ball_pos.y + 4; ball_dir <= SSW;
-                    when NW_SE   => ball_pos.x <= ball_pos.x + 2; ball_pos.y <= ball_pos.y + 4; ball_dir <= SSE;
-                    when others  => ball_pos.x <= ball_pos.x + 4; ball_pos.y <= ball_pos.y + 2; ball_dir <= ESE;
-                end case;
-            when SE     =>
-                case ref is
-                    when NO_REF  => ball_pos.x <= ball_pos.x + 3; ball_pos.y <= ball_pos.y + 3; ball_dir <= SE;
-                    when N_S     => ball_pos.x <= ball_pos.x - 4; ball_pos.y <= ball_pos.y + 4; ball_dir <= SW;
-                    when NNE_SSW => ball_pos.x <= ball_pos.x - 4; ball_pos.y <= ball_pos.y;     ball_dir <= W;
-                    when NE_SW   => ball_pos.x <= ball_pos.x - 3; ball_pos.y <= ball_pos.y - 3; ball_dir <= NW;
-                    when E_W     => ball_pos.x <= ball_pos.x + 3; ball_pos.y <= ball_pos.y - 3; ball_dir <= NE;
-                    when NNW_SSE => ball_pos.x <= ball_pos.x - 2; ball_pos.y <= ball_pos.y + 4; ball_dir <= SSW;
-                    when NW_SE   => ball_pos.x <= ball_pos.x + 3; ball_pos.y <= ball_pos.y + 3; ball_dir <= SE;
-                    when others  => ball_pos.x <= ball_pos.x + 3; ball_pos.y <= ball_pos.y + 3; ball_dir <= SE;
-                end case;
-            when SSE    =>
-                case ref is
-                    when NO_REF  => ball_pos.x <= ball_pos.x + 2; ball_pos.y <= ball_pos.y + 4; ball_dir <= SSE;
-                    when N_S     => ball_pos.x <= ball_pos.x - 2; ball_pos.y <= ball_pos.y + 4; ball_dir <= SSW;
-                    when NNE_SSW => ball_pos.x <= ball_pos.x - 4; ball_pos.y <= ball_pos.y + 2; ball_dir <= WSW;
-                    when NE_SW   => ball_pos.x <= ball_pos.x - 4; ball_pos.y <= ball_pos.y - 2; ball_dir <= WNW;
-                    when E_W     => ball_pos.x <= ball_pos.x + 2; ball_pos.y <= ball_pos.y - 4; ball_dir <= NNE;
-                    when NNW_SSE => ball_pos.x <= ball_pos.x - 4; ball_pos.y <= ball_pos.y + 4; ball_dir <= SW;
-                    when NW_SE   => ball_pos.x <= ball_pos.x + 4; ball_pos.y <= ball_pos.y + 2; ball_dir <= ESE;
-                    when others  => ball_pos.x <= ball_pos.x + 2; ball_pos.y <= ball_pos.y + 4; ball_dir <= SSE;
-                end case;
-            when SSW    =>
-                case ref is
-                    when NO_REF  => ball_pos.x <= ball_pos.x - 2; ball_pos.y <= ball_pos.y + 4; ball_dir <= SSW;
-                    when N_S     => ball_pos.x <= ball_pos.x + 2; ball_pos.y <= ball_pos.y + 4; ball_dir <= SSE;
-                    when NNE_SSW => ball_pos.x <= ball_pos.x + 3; ball_pos.y <= ball_pos.y + 3; ball_dir <= SE;
-                    when NE_SW   => ball_pos.x <= ball_pos.x - 4; ball_pos.y <= ball_pos.y + 2; ball_dir <= WSW;
-                    when E_W     => ball_pos.x <= ball_pos.x - 2; ball_pos.y <= ball_pos.y - 4; ball_dir <= NNW;
-                    when NNW_SSE => ball_pos.x <= ball_pos.x - 4; ball_pos.y <= ball_pos.y + 4; ball_dir <= SW;
-                    when NW_SE   => ball_pos.x <= ball_pos.x + 4; ball_pos.y <= ball_pos.y + 2; ball_dir <= ESE;
-                    when others  => ball_pos.x <= ball_pos.x - 2; ball_pos.y <= ball_pos.y + 4; ball_dir <= SSW;
-                end case;
-            when SW     =>
-            when WSW    =>
-            when W      =>
-            when WNW    =>
-            when NW     =>
-            when NNW    =>
-        end case;
+                        -- New direction
+                        case ball_dir is
+                            when NNE    =>
+                                case ref is
+                                    when N_S     => new_dir := NNW;
+                                    when NNE_SSW => new_dir := NW;----
+                                    when NE_SW   => new_dir := ENE;
+                                    when E_W     => new_dir := SSE;
+                                    when NW_SE   => new_dir := WSW;
+                                    when NNW_SSE => new_dir := WNW;
+                                    when others  => new_dir := NNE;
+                                end case;
+                            when NE     =>
+                                case ref is
+                                    when N_S     => new_dir := NW;
+                                    when NNE_SSW => new_dir := NNW;----
+                                    when NE_SW   => new_dir := NE;--
+                                    when E_W     => new_dir := SE;
+                                    when NW_SE   => new_dir := SW;
+                                    when NNW_SSE => new_dir := W;
+                                    when others  => new_dir := NE;
+                                end case;
+                            when ENE    =>
+                                case ref is
+                                    when N_S     => new_dir := WNW;
+                                    when NNE_SSW => new_dir := NNW;
+                                    when NE_SW   => new_dir := NNE;
+                                    when E_W     => new_dir := ESE;
+                                    when NW_SE   => new_dir := SSW;
+                                    when NNW_SSE => new_dir := WSW;
+                                    when others  => new_dir := ENE;
+                                end case;
+                            when E      =>
+                                case ref is
+                                    when N_S     => new_dir := W;
+                                    when NNE_SSW => new_dir := NW;
+                                    when NE_SW   => new_dir := NNE;----
+                                    when E_W     => new_dir := E;--
+                                    when NW_SE   => new_dir := SSE;----
+                                    when NNW_SSE => new_dir := SW;
+                                    when others  => new_dir := E;
+                                end case;
+                            when ESE    =>
+                                case ref is
+                                    when N_S     => new_dir := WSW;
+                                    when NNE_SSW => new_dir := WNW;
+                                    when NE_SW   => new_dir := NNW;
+                                    when E_W     => new_dir := ENE;
+                                    when NW_SE   => new_dir := SSE;
+                                    when NNW_SSE => new_dir := SSW;
+                                    when others  => new_dir := ESE;
+                                end case;
+                            when SE     =>
+                                case ref is
+                                    when N_S     => new_dir := SW;
+                                    when NNE_SSW => new_dir := W;
+                                    when NE_SW   => new_dir := NW;
+                                    when E_W     => new_dir := NE;
+                                    when NW_SE   => new_dir := SE;--
+                                    when NNW_SSE => new_dir := SSW;----
+                                    when others  => new_dir := SE;
+                                end case;
+                            when SSE    =>
+                                case ref is
+                                    when N_S     => new_dir := SSW;
+                                    when NNE_SSW => new_dir := WSW;
+                                    when NE_SW   => new_dir := WNW;
+                                    when E_W     => new_dir := NNE;
+                                    when NW_SE   => new_dir := ESE;
+                                    when NNW_SSE => new_dir := SW;----
+                                    when others  => new_dir := SSE;
+                                end case;
+                            when SSW    =>
+                                case ref is
+                                    when N_S     => new_dir := SSE;
+                                    when NNE_SSW => new_dir := SE;----
+                                    when NE_SW   => new_dir := WSW;
+                                    when E_W     => new_dir := NNW;
+                                    when NW_SE   => new_dir := ENE;
+                                    when NNW_SSE => new_dir := ESE;
+                                    when others  => new_dir := SSW;
+                                end case;
+                            when SW     =>
+                                case ref is
+                                    when N_S     => new_dir := SE;
+                                    when NNE_SSW => new_dir := SSE;----
+                                    when NE_SW   => new_dir := SW;--
+                                    when E_W     => new_dir := NW;
+                                    when NW_SE   => new_dir := NE;
+                                    when NNW_SSE => new_dir := E;
+                                    when others  => new_dir := SW;
+                                end case;
+                            when WSW    =>
+                                case ref is
+                                    when N_S     => new_dir := ESE;
+                                    when NNE_SSW => new_dir := SSE;
+                                    when NE_SW   => new_dir := SSW;
+                                    when E_W     => new_dir := WNW;
+                                    when NW_SE   => new_dir := NNE;
+                                    when NNW_SSE => new_dir := ENE;
+                                    when others  => new_dir := WSW;
+                                end case;
+                            when W      =>
+                                case ref is
+                                    when N_S     => new_dir := E;
+                                    when NNE_SSW => new_dir := SE;
+                                    when NE_SW   => new_dir := SSW;----
+                                    when E_W     => new_dir := W;--
+                                    when NW_SE   => new_dir := NNW;----
+                                    when NNW_SSE => new_dir := NE;
+                                    when others  => new_dir := W;
+                                end case;
+                            when WNW    =>
+                                case ref is
+                                    when N_S     => new_dir := ENE;
+                                    when NNE_SSW => new_dir := ESE;
+                                    when NE_SW   => new_dir := SSE;
+                                    when E_W     => new_dir := WSW;
+                                    when NW_SE   => new_dir := NNW;
+                                    when NNW_SSE => new_dir := NNE;
+                                    when others  => new_dir := WNW;
+                                end case;
+                            when NW     =>
+                                case ref is
+                                    when N_S     => new_dir := NE;
+                                    when NNE_SSW => new_dir := E;
+                                    when NE_SW   => new_dir := SE;
+                                    when E_W     => new_dir := SW;
+                                    when NW_SE   => new_dir := NW;--
+                                    when NNW_SSE => new_dir := NNE;----
+                                    when others  => new_dir := NW;
+                                end case;
+                            when NNW    =>
+                                case ref is
+                                    when N_S     => new_dir := NNE;
+                                    when NNE_SSW => new_dir := ENE;
+                                    when NE_SW   => new_dir := ESE;
+                                    when E_W     => new_dir := SSW;
+                                    when NW_SE   => new_dir := WNW;
+                                    when NNW_SSE => new_dir := NE;----
+                                    when others  => new_dir := NNW;
+                                end case;
+                            when others =>
+                                new_dir := new_dir;
+                        end case;
 
+                        -- New position
+                        case new_dir is
+                            when NNE    => new_pos.x := ball_pos.x + 2; new_pos.y := ball_pos.y - 4;
+                            when NE     => new_pos.x := ball_pos.x + 3; new_pos.y := ball_pos.y - 3;
+                            when ENE    => new_pos.x := ball_pos.x + 4; new_pos.y := ball_pos.y - 2;
+                            when E      => new_pos.x := ball_pos.x + 4; new_pos.y := ball_pos.y + 0;
+                            when ESE    => new_pos.x := ball_pos.x + 4; new_pos.y := ball_pos.y + 2;
+                            when SE     => new_pos.x := ball_pos.x + 3; new_pos.y := ball_pos.y + 3;
+                            when SSE    => new_pos.x := ball_pos.x + 2; new_pos.y := ball_pos.y + 4;
+                            when SSW    => new_pos.x := ball_pos.x - 2; new_pos.y := ball_pos.y + 4;
+                            when SW     => new_pos.x := ball_pos.x - 3; new_pos.y := ball_pos.y + 3;
+                            when WSW    => new_pos.x := ball_pos.x - 4; new_pos.y := ball_pos.y + 2;
+                            when W      => new_pos.x := ball_pos.x - 4; new_pos.y := ball_pos.y + 0;
+                            when WNW    => new_pos.x := ball_pos.x - 4; new_pos.y := ball_pos.y - 2;
+                            when NW     => new_pos.x := ball_pos.x - 3; new_pos.y := ball_pos.y - 3;
+                            when NNW    => new_pos.x := ball_pos.x - 2; new_pos.y := ball_pos.y - 4;
+                            when others => new_pos := new_pos;
+                        end case;
+                    
+                    end if;
+
+                    -- Painting
+                    if ((line_num < new_pos.y + 3)  and (line_num > new_pos.y - 3)   and
+                        (pixel_num < new_pos.x + 5) and (pixel_num > new_pos.x - 5)) or
+                    (((line_num = new_pos.y + 3)  or (line_num = new_pos.y - 3))    and
+                        (pixel_num < new_pos.x + 4) and (pixel_num > new_pos.x - 4)) or
+                    (((line_num = new_pos.y + 4)  or (line_num = new_pos.y - 4))    and
+                        (pixel_num < new_pos.x + 3) and (pixel_num > new_pos.x - 3)) then
+                        b_r <= b"1111";
+                        b_g <= b"1111";
+                        b_b <= b"1111";
+                    else
+                        b_r <= b"0000";
+                        b_g <= b"0000";
+                        b_b <= b"0000";
+                    end if;
+
+                    ball_pos <= new_pos;
+                    ball_dir <= new_dir;
+            
+                else
+                    new_pos  := new_pos;
+                    new_dir  := new_dir;
+                    ball_pos <= ball_pos;
+                    ball_dir <= ball_dir;
+                    b_r      <= b"0000";
+                    b_g      <= b"0000";
+                    b_b      <= b"0000";
+                end if;
+
+            -- Reset
+            else
+                new_pos.x := 320;
+                new_pos.y := 100;
+                new_dir   := SSE;
+                ball_pos  <= new_pos;
+                ball_dir  <= new_dir;
+                b_r       <= b"0000";
+                b_g       <= b"0000";
+                b_b       <= b"0000";
+            end if;
+        end if;
     end process;
 
     -- Top boundary line, combinational logic
-    line_1 : process is
+    line_1 : process (line_num, pixel_num, ball_pos) is
     begin
 
         -- Painting
@@ -265,7 +412,7 @@ begin
     end process;
 
     -- Left top boundary line, combinational logic
-    line_2 : process is
+    line_2 : process (line_num, pixel_num, ball_pos) is
     begin
 
         -- Painting
@@ -291,7 +438,7 @@ begin
     end process;
 
     -- Right top boundary line, combinational logic
-    line_3 : process is
+    line_3 : process (line_num, pixel_num, ball_pos) is
         begin
     
             -- Painting
@@ -317,7 +464,7 @@ begin
         end process;
 
     -- Left bottom boundary line, combinational logic
-    line_4 : process is
+    line_4 : process (line_num, pixel_num, ball_pos) is
         begin
     
             -- Painting
@@ -343,33 +490,33 @@ begin
         end process;
 
     -- Right bottom boundary line, combinational logic
-    line_5 : process is
+    line_5 : process (line_num, pixel_num, ball_pos) is
         begin
     
             -- Painting
             if (line_num < 380)  and (line_num > 254)  and
                (pixel_num < 622) and (pixel_num > 619) then
-                l3_r <= b"1111";
-                l3_g <= b"1111";
-                l3_b <= b"1111";
+                l5_r <= b"1111";
+                l5_g <= b"1111";
+                l5_b <= b"1111";
             else
-                l3_r <= b"0000";
-                l3_g <= b"0000";
-                l3_b <= b"0000";
+                l5_r <= b"0000";
+                l5_g <= b"0000";
+                l5_b <= b"0000";
             end if;
     
             -- Ball reflections
             if (ball_pos.x > 611) and  (ball_pos.y > 254) and
                (ball_pos.y < 380) then
-                l3_ref <= N_S;
+                l5_ref <= N_S;
             else
-                l3_ref <= NO_REF;
+                l5_ref <= NO_REF;
             end if;
     
         end process;
     
     -- Bottom boundary line, combinational logic
-    line_6 : process is
+    line_6 : process (line_num, pixel_num, ball_pos) is
         begin
     
             -- Painting
@@ -398,5 +545,198 @@ begin
             end if;
     
         end process;
+
+    -- VGA horizontal signals, Moore FSM
+        -- Inputs:   clk, KEY(0)
+        -- Outputs:  h_en, VGA_HS, pixel_num
+        -- Internal: vga_hor_state, cnt
+    vga_hor_fsm : process (clk) is
+        variable cnt : natural;
+    begin
+        if rising_edge(clk) then
+            if KEY(0) = '1' then
+
+                case vga_hor_state is
+
+                    -- A state
+                    when vga_hor_A =>
+                        if cnt = 15 then
+                            vga_hor_state <= vga_hor_B;
+                            h_en          <= '0';
+                            VGA_HS        <= '0';
+                            pixel_num     <= 0;
+                        else
+                            vga_hor_state <= vga_hor_A;
+                            h_en          <= '0';
+                            VGA_HS        <= '1';
+                            pixel_num     <= 0;
+                        end if;
+                        cnt := cnt + 1;
+
+                    -- B state
+                    when vga_hor_B =>
+                        if cnt = 111 then
+                            vga_hor_state <= vga_hor_C;
+                            h_en          <= '0';
+                            VGA_HS        <= '1';
+                            pixel_num     <= 0;
+                        else
+                            vga_hor_state <= vga_hor_B;
+                            h_en          <= '0';
+                            VGA_HS        <= '0';
+                            pixel_num     <= 0;
+                        end if;
+                        cnt := cnt + 1;
+
+                    -- C state
+                    when vga_hor_C =>
+                        if cnt = 159 then
+                            vga_hor_state <= vga_hor_D;
+                            h_en          <= '1';
+                            VGA_HS        <= '1';
+                            pixel_num     <= 0;
+                        else
+                            vga_hor_state <= vga_hor_C;
+                            h_en          <= '0';
+                            VGA_HS        <= '1';
+                            pixel_num     <= 0;
+                        end if;
+                        cnt := cnt + 1;
+
+                    -- D state
+                    when vga_hor_D =>
+                        if cnt = 799 then
+                            vga_hor_state <= vga_hor_A;
+                            h_en          <= '0';
+                            VGA_HS        <= '1';
+                            pixel_num     <= 0;
+                            cnt           := 0;
+                        else
+                            vga_hor_state <= vga_hor_D;
+                            h_en          <= '1';
+                            VGA_HS        <= '1';
+                            pixel_num     <= cnt - 159;
+                            cnt           := cnt + 1;
+                        end if;
+
+                    when others =>
+                        vga_hor_state <= vga_hor_A;
+                        h_en          <= '0';
+                        VGA_HS        <= '1';
+                        pixel_num     <= 0;
+                        cnt           := 0;
+                    
+                end case;
+
+            else
+                vga_hor_state <= vga_hor_A;
+                h_en          <= '0';
+                VGA_HS        <= '1';
+                pixel_num     <= 0;
+                cnt           := 0;
+            end if;
+        end if;
+    end process;
+
+    -- VGA vertical signals, Moore FSM
+        -- Inputs:   clk, KEY(0)
+        -- Outputs:  v_en, VGA_VS, line_num
+        -- Internal: vga_ver_state, cnt
+    vga_ver_fsm : process (clk) is
+        variable cnt : natural;
+    begin
+        if rising_edge(clk) then
+            if KEY(0) = '1' then
+
+                case vga_ver_state is
+
+                    -- A state
+                    when vga_ver_A =>
+                        if cnt = 7999 then
+                            vga_ver_state <= vga_ver_B;
+                            v_en          <= '0';
+                            VGA_VS        <= '0';
+                            line_num      <= 0;
+                        else
+                            vga_ver_state <= vga_ver_A;
+                            v_en          <= '0';
+                            VGA_VS        <= '1';
+                            line_num      <= 0;
+                        end if;
+                        cnt := cnt + 1;
+
+                    -- B state
+                    when vga_ver_B =>
+                        if cnt = 9599 then
+                            vga_ver_state <= vga_ver_C;
+                            v_en          <= '0';
+                            VGA_VS        <= '1';
+                            line_num      <= 0;
+                        else
+                            vga_ver_state <= vga_ver_B;
+                            v_en          <= '0';
+                            VGA_VS        <= '0';
+                            line_num      <= 0;
+                        end if;
+                        cnt := cnt + 1;
+
+                    -- C state
+                    when vga_ver_C =>
+                        if cnt = 35999 then
+                            vga_ver_state <= vga_ver_D;
+                            v_en          <= '1';
+                            VGA_VS        <= '1';
+                            line_num      <= 0;
+                        else
+                            vga_ver_state <= vga_ver_C;
+                            v_en          <= '0';
+                            VGA_VS        <= '1';
+                            line_num      <= 0;
+                        end if;
+                        cnt := cnt + 1;
+
+                    -- D state
+                    when vga_ver_D =>
+                        if cnt = 419999 then
+                            vga_ver_state <= vga_ver_A;
+                            v_en          <= '0';
+                            VGA_VS        <= '1';
+                            line_num      <= 0;
+                            cnt           := 0;
+                        else
+                            vga_ver_state <= vga_ver_D;
+                            v_en          <= '1';
+                            VGA_VS        <= '1';
+                            line_num      <= (cnt - 35999) / 800;
+                            cnt           := cnt + 1;
+                        end if;
+
+                    when others =>
+                        vga_ver_state <= vga_ver_A;
+                        v_en          <= '0';
+                        VGA_VS        <= '1';
+                        line_num      <= 0;
+                        cnt           := 0;
+                    
+                end case;
+                
+            else
+                vga_ver_state <= vga_ver_A;
+                v_en          <= '0';
+                VGA_VS        <= '1';
+                line_num      <= 0;
+                cnt           := 0;
+            end if;
+        end if;
+    end process;
+
+    --
+    -- Component instantiation
+    --
+
+    pll_inst : pll PORT MAP (
+		inclk0 => ADC_CLK_10,
+		c0	   => clk
+	);
 
 end architecture RTL;

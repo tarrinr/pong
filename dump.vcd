@@ -1,0 +1,57 @@
+$date
+  Sat Nov 23 14:51:35 2019
+$end
+$version
+  GHDL v0
+$end
+$timescale
+  1 fs
+$end
+$var reg 1 ! adc_clk_10 $end
+$var reg 2 " key[1:0] $end
+$var reg 4 # vga_r[3:0] $end
+$var reg 4 $ vga_g[3:0] $end
+$var reg 4 % vga_b[3:0] $end
+$var reg 1 & vga_hs $end
+$var reg 1 ' vga_vs $end
+$var reg 1 ( clk $end
+$var integer 32 ) line_num $end
+$var integer 32 * pixel_num $end
+$var reg 1 + vga_en $end
+$var reg 1 , h_en $end
+$var reg 1 - v_en $end
+$comment ball_pos is not handled $end
+$comment ball_dir is not handled $end
+$var reg 3 . ref[2:0] $end
+$var reg 4 / b_r[3:0] $end
+$var reg 4 0 b_g[3:0] $end
+$var reg 4 1 b_b[3:0] $end
+$comment vga_hor_state is not handled $end
+$comment vga_ver_state is not handled $end
+$var reg 4 2 l1_r[3:0] $end
+$var reg 4 3 l1_g[3:0] $end
+$var reg 4 4 l1_b[3:0] $end
+$var reg 3 5 l1_ref[2:0] $end
+$var reg 4 6 l2_r[3:0] $end
+$var reg 4 7 l2_g[3:0] $end
+$var reg 4 8 l2_b[3:0] $end
+$var reg 3 9 l2_ref[2:0] $end
+$var reg 4 : l3_r[3:0] $end
+$var reg 4 ; l3_g[3:0] $end
+$var reg 4 < l3_b[3:0] $end
+$var reg 3 = l3_ref[2:0] $end
+$var reg 4 > l4_r[3:0] $end
+$var reg 4 ? l4_g[3:0] $end
+$var reg 4 @ l4_b[3:0] $end
+$var reg 3 A l4_ref[2:0] $end
+$var reg 4 B l5_r[3:0] $end
+$var reg 4 C l5_g[3:0] $end
+$var reg 4 D l5_b[3:0] $end
+$var reg 3 E l5_ref[2:0] $end
+$var reg 4 F l6_r[3:0] $end
+$var reg 4 G l6_g[3:0] $end
+$var reg 4 H l6_b[3:0] $end
+$var reg 3 I l6_ref[2:0] $end
+$scope module pll_inst $end
+$upscope $end
+$enddefinitions $end
