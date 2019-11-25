@@ -53,19 +53,21 @@ architecture RTL of PONG is
     type    vga_ver_state_type is (vga_ver_A, vga_ver_B, vga_ver_C, vga_ver_D);
     subtype color              is std_logic_vector(3 downto 0);
     subtype reflection         is std_logic_vector(2 downto 0);
+    subtype score              is integer range 0 to 5;
 
 
     --
     -- Constants
     --
 
-    constant NO_REF  : reflection := "000";
-    constant N_S     : reflection := "001";
-    constant NNE_SSW : reflection := "010";
-    constant NE_SW   : reflection := "011";
-    constant E_W     : reflection := "100";
-    constant NNW_SSE : reflection := "101";
-    constant NW_SE   : reflection := "110";
+    constant INIT_POS : position   := (x => 100, y => 100);
+    constant NO_REF   : reflection := "000";
+    constant N_S      : reflection := "001";
+    constant NNE_SSW  : reflection := "010";
+    constant NE_SW    : reflection := "011";
+    constant E_W      : reflection := "100";
+    constant NNW_SSE  : reflection := "101";
+    constant NW_SE    : reflection := "110";
 
 
     --
@@ -94,12 +96,14 @@ architecture RTL of PONG is
     signal v_en      : std_logic;
 
     -- Ball
-    signal ball_pos  : position;
-    signal ball_dir  : direction;
+    signal ball_pos  : position   := INIT_POS;
+    signal ball_dir  : direction  := NE;
     signal ref       : reflection;
     signal b_r       : color;
     signal b_g       : color;
     signal b_b       : color;
+    signal g1        : score;
+    signal g2        : score;
 
     -- States
     signal vga_hor_state : vga_hor_state_type;
@@ -201,9 +205,9 @@ begin
     -- Concurrent signal assignments
     --
 
-    VGA_R  <= l1_r   or l2_r   or l3_r   or l4_r   or l5_r   or l6_r   or b_r    ;--or b1_r   or b2_r   or b3_r   or b4_r   or b5_r   or b6_r   or b7_r   or b8_r   or b9_r;
-    VGA_G  <= l1_g   or l2_g   or l3_g   or l4_g   or l5_g   or l6_g   or b_g    ;--or b1_g   or b2_g   or b3_g   or b4_g   or b5_g   or b6_g   or b7_g   or b8_g   or b9_g;
-    VGA_B  <= l1_b   or l2_b   or l3_b   or l4_b   or l5_b   or l6_b   or b_b    ;--or b1_b   or b2_b   or b3_b   or b4_b   or b5_b   or b6_b   or b7_b   or b8_b   or b9_b;
+    VGA_R  <= l1_r   or l2_r   or l3_r   or l4_r   or l5_r   or l6_r   or b_r    or b1_r   or b2_r   or b3_r   or b4_r   or b5_r   or b6_r   or b7_r   or b8_r   or b9_r;
+    VGA_G  <= l1_g   or l2_g   or l3_g   or l4_g   or l5_g   or l6_g   or b_g    or b1_g   or b2_g   or b3_g   or b4_g   or b5_g   or b6_g   or b7_g   or b8_g   or b9_g;
+    VGA_B  <= l1_b   or l2_b   or l3_b   or l4_b   or l5_b   or l6_b   or b_b    or b1_b   or b2_b   or b3_b   or b4_b   or b5_b   or b6_b   or b7_b   or b8_b   or b9_b;
     ref    <= l1_ref or l2_ref or l3_ref or l4_ref or l5_ref or l6_ref or b1_ref or b2_ref or b3_ref or b4_ref or b5_ref or b6_ref or b7_ref or b8_ref or b9_ref;
     vga_en <= h_en and v_en;
 
@@ -212,16 +216,18 @@ begin
     --
 
     -- Ball position/direction, Moore FSM
-        -- Inputs:   KEY(0), ref, line_num, pixel_num, vga_en
+        -- Inputs:   clk, KEY(0), ref, line_num, pixel_num
         -- Outputs:  b_r, b_g, b_b, ball_pos, g1, g2
-        -- Internal: new_dir, new_pos, ball_dir, cnt
-    ball : process (pixel_num) is
-        variable new_dir : direction := NO_DIR;
-        variable new_pos : position  := (x => 320, y => 100);
+        -- Internal: ball_dir
+    ball : process (clk) is
+        variable new_dir : direction;
+        variable new_pos : position;
+        variable g1      : score;
+        variable g2      : score;
     begin
-        if KEY(0) = '1' then
-            if vga_en = '1' then
-                if (line_num = 0) and (pixel_num = 0) then
+        if rising_edge(clk) then
+            if KEY(0) = '1' then
+                if (line_num = 479) and (pixel_num = 639) then
 
                     -- New direction
                     case ball_dir is
@@ -387,51 +393,61 @@ begin
                         when NNW    => new_pos.x := ball_pos.x - 2; new_pos.y := ball_pos.y - 4;
                         when others => new_pos := new_pos;
                     end case;
+
+                    -- Check for goal
+                    if new_pos.x < 20 then
+                        g1 := g1 + 1;
+                        g2 := g2;
+                        ball_pos := INIT_POS;
+                    elsif new_pos.x > 619 then
+                        g1 := g1;
+                        g2 := g2 + 1;
+                        ball_pos := INIT_POS;
+                    else
+                        g1 := g1;
+                        g2 := g2;
+                    end if;
                 
                 else
                     new_dir := new_dir;
                     new_pos := new_pos;
+                    g1      := g1;
+                    g2      := g2;
                 end if;
-
-                -- Painting
-                if ((line_num < new_pos.y + 3)  and (line_num > new_pos.y - 3)   and
-                    (pixel_num < new_pos.x + 5) and (pixel_num > new_pos.x - 5)) or
-                (((line_num = new_pos.y + 3)  or (line_num = new_pos.y - 3))    and
-                    (pixel_num < new_pos.x + 4) and (pixel_num > new_pos.x - 4)) or
-                (((line_num = new_pos.y + 4)  or (line_num = new_pos.y - 4))    and
-                    (pixel_num < new_pos.x + 3) and (pixel_num > new_pos.x - 3)) then
-                    b_r <= b"1111";
-                    b_g <= b"1111";
-                    b_b <= b"1111";
-                else
-                    b_r <= b"0000";
-                    b_g <= b"0000";
-                    b_b <= b"0000";
-                end if;
-
+                
                 ball_pos <= new_pos;
                 ball_dir <= new_dir;
-        
-            else
-                new_pos  := new_pos;
-                new_dir  := new_dir;
-                ball_pos <= ball_pos;
-                ball_dir <= ball_dir;
-                b_r      <= b"0000";
-                b_g      <= b"0000";
-                b_b      <= b"0000";
-            end if;
+                g1       <= g1;
+                g2       <= g2;
 
-        -- Reset
+            else
+                ball_pos   <= INIT_POS;
+                ball_dir   <= NE;
+                b_r        <= b"0000";
+                b_g        <= b"0000";
+                b_b        <= b"0000";
+                g1         <= 0;
+                g2         <= 0;
+            end if;
+        end if;
+    end process;
+
+    -- Ball painting, combinational logic
+    ball_paint : process (line_num, pixel_num, ball_pos) is
+    begin
+        if ((line_num < ball_pos.y + 3)  and (line_num > ball_pos.y - 3)   and
+           (pixel_num < ball_pos.x + 5)  and (pixel_num > ball_pos.x - 5)) or
+           (((line_num = ball_pos.y + 3) or  (line_num = ball_pos.y - 3))  and
+           (pixel_num < ball_pos.x + 4)  and (pixel_num > ball_pos.x - 4)) or
+           (((line_num = ball_pos.y + 4) or  (line_num = ball_pos.y - 4))  and
+           (pixel_num < ball_pos.x + 3)  and (pixel_num > ball_pos.x - 3)) then
+            b_r <= b"1111";
+            b_g <= b"1111";
+            b_b <= b"1111";
         else
-            new_pos.x := 320;
-            new_pos.y := 100;
-            new_dir   := NE;
-            ball_pos  <= new_pos;
-            ball_dir  <= new_dir;
-            b_r       <= b"0000";
-            b_g       <= b"0000";
-            b_b       <= b"0000";
+            b_r <= b"0000";
+            b_g <= b"0000";
+            b_b <= b"0000";
         end if;
     end process;
 
