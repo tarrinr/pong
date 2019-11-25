@@ -158,14 +158,14 @@ begin
     --
 
     -- Ball position/direction, Moore FSM
-        -- Inputs:   clk, KEY(0), ref, line_num, pixel_num
+        -- Inputs:   KEY(0), ref, line_num, pixel_num, vga_en
         -- Outputs:  b_r, b_g, b_b, ball_pos, g1, g2
         -- Internal: new_dir, new_pos, ball_dir, cnt
     ball : process (pixel_num) is
         variable new_dir : direction := E;
         variable new_pos : position  := (x => 320, y => 100);
     begin
-        if KEY(0) = '1' then
+        if KEY(0) = '1' theng
             if vga_en = '1' then
                 if (line_num = 0) and (pixel_num = 0) then
 
