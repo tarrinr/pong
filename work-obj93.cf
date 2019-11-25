@@ -1,4 +1,4 @@
 v 3
-file . "pong.vhdl" "20191123215134.000" "20191123145135.706":
-  entity pong at 8( 98) + 0 on 27;
-  architecture rtl of pong at 41( 719) + 0 on 28;
+file . "pong.vhdl" "20191125194734.000" "20191125124910.450":
+  entity pong at 8( 98) + 0 on 29;
+  architecture rtl of pong at 41( 719) + 0 on 30;

@@ -1,5 +1,5 @@
 Analysis & Synthesis report for pong
-Sat Nov 23 16:48:53 2019
+Mon Nov 25 12:48:01 2019
 Quartus Prime Version 18.1.0 Build 625 09/12/2018 SJ Lite Edition
 
 
@@ -16,19 +16,16 @@ Quartus Prime Version 18.1.0 Build 625 09/12/2018 SJ Lite Edition
   8. Analysis & Synthesis IP Cores Summary
   9. State Machine - |PONG|vga_ver_state
  10. State Machine - |PONG|vga_hor_state
- 11. State Machine - |PONG|ball_dir
- 12. State Machine - |PONG|\ball:new_dir
- 13. Registers Removed During Synthesis
- 14. Removed Registers Triggering Further Register Optimizations
- 15. General Register Statistics
- 16. Inverted Register Statistics
- 17. Multiplexer Restructuring Statistics (Restructuring Performed)
- 18. Parameter Settings for User Entity Instance: pll:pll_inst|altpll:altpll_component
- 19. Parameter Settings for Inferred Entity Instance: lpm_divide:Div0
- 20. altpll Parameter Settings by Entity Instance
- 21. Post-Synthesis Netlist Statistics for Top Partition
- 22. Elapsed Time Per Partition
- 23. Analysis & Synthesis Messages
+ 11. User-Specified and Inferred Latches
+ 12. Registers Removed During Synthesis
+ 13. General Register Statistics
+ 14. Multiplexer Restructuring Statistics (Restructuring Performed)
+ 15. Parameter Settings for User Entity Instance: pll:pll_inst|altpll:altpll_component
+ 16. Parameter Settings for Inferred Entity Instance: lpm_divide:Div0
+ 17. altpll Parameter Settings by Entity Instance
+ 18. Post-Synthesis Netlist Statistics for Top Partition
+ 19. Elapsed Time Per Partition
+ 20. Analysis & Synthesis Messages
 
 
 
@@ -54,15 +51,15 @@ refer to the applicable agreement for further details.
 +----------------------------------------------------------------------------------+
 ; Analysis & Synthesis Summary                                                     ;
 +------------------------------------+---------------------------------------------+
-; Analysis & Synthesis Status        ; Successful - Sat Nov 23 16:48:53 2019       ;
+; Analysis & Synthesis Status        ; Successful - Mon Nov 25 12:48:01 2019       ;
 ; Quartus Prime Version              ; 18.1.0 Build 625 09/12/2018 SJ Lite Edition ;
 ; Revision Name                      ; pong                                        ;
 ; Top-level Entity Name              ; PONG                                        ;
 ; Family                             ; MAX 10                                      ;
-; Total logic elements               ; 1,477                                       ;
-;     Total combinational functions  ; 1,477                                       ;
-;     Dedicated logic registers      ; 144                                         ;
-; Total registers                    ; 144                                         ;
+; Total logic elements               ; 1,605                                       ;
+;     Total combinational functions  ; 1,605                                       ;
+;     Dedicated logic registers      ; 91                                          ;
+; Total registers                    ; 91                                          ;
 ; Total pins                         ; 17                                          ;
 ; Total virtual pins                 ; 0                                           ;
 ; Total memory bits                  ; 0                                           ;
@@ -209,20 +206,20 @@ refer to the applicable agreement for further details.
 +---------------------------------------------+---------------------------------------------------------------------------------+
 ; Resource                                    ; Usage                                                                           ;
 +---------------------------------------------+---------------------------------------------------------------------------------+
-; Estimated Total logic elements              ; 1,477                                                                           ;
+; Estimated Total logic elements              ; 1,605                                                                           ;
 ;                                             ;                                                                                 ;
-; Total combinational functions               ; 1477                                                                            ;
+; Total combinational functions               ; 1605                                                                            ;
 ; Logic element usage by number of LUT inputs ;                                                                                 ;
-;     -- 4 input functions                    ; 477                                                                             ;
-;     -- 3 input functions                    ; 339                                                                             ;
-;     -- <=2 input functions                  ; 661                                                                             ;
+;     -- 4 input functions                    ; 603                                                                             ;
+;     -- 3 input functions                    ; 361                                                                             ;
+;     -- <=2 input functions                  ; 641                                                                             ;
 ;                                             ;                                                                                 ;
 ; Logic elements by mode                      ;                                                                                 ;
-;     -- normal mode                          ; 968                                                                             ;
+;     -- normal mode                          ; 1096                                                                            ;
 ;     -- arithmetic mode                      ; 509                                                                             ;
 ;                                             ;                                                                                 ;
-; Total registers                             ; 144                                                                             ;
-;     -- Dedicated logic registers            ; 144                                                                             ;
+; Total registers                             ; 91                                                                              ;
+;     -- Dedicated logic registers            ; 91                                                                              ;
 ;     -- I/O registers                        ; 0                                                                               ;
 ;                                             ;                                                                                 ;
 ; I/O pins                                    ; 17                                                                              ;
@@ -233,9 +230,9 @@ refer to the applicable agreement for further details.
 ;     -- PLLs                                 ; 1                                                                               ;
 ;                                             ;                                                                                 ;
 ; Maximum fan-out node                        ; pll:pll_inst|altpll:altpll_component|pll_altpll:auto_generated|wire_pll1_clk[0] ;
-; Maximum fan-out                             ; 145                                                                             ;
-; Total fan-out                               ; 4623                                                                            ;
-; Average fan-out                             ; 2.79                                                                            ;
+; Maximum fan-out                             ; 92                                                                              ;
+; Total fan-out                               ; 4986                                                                            ;
+; Average fan-out                             ; 2.88                                                                            ;
 +---------------------------------------------+---------------------------------------------------------------------------------+
 
 
@@ -244,12 +241,12 @@ refer to the applicable agreement for further details.
 +---------------------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+----------------------------------------------------------------------------------------------------+-----------------+--------------+
 ; Compilation Hierarchy Node            ; Combinational ALUTs ; Dedicated Logic Registers ; Memory Bits ; UFM Blocks ; DSP Elements ; DSP 9x9 ; DSP 18x18 ; Pins ; Virtual Pins ; ADC blocks ; Full Hierarchy Name                                                                                ; Entity Name     ; Library Name ;
 +---------------------------------------+---------------------+---------------------------+-------------+------------+--------------+---------+-----------+------+--------------+------------+----------------------------------------------------------------------------------------------------+-----------------+--------------+
-; |PONG                                 ; 1477 (748)          ; 144 (144)                 ; 0           ; 0          ; 0            ; 0       ; 0         ; 17   ; 0            ; 0          ; |PONG                                                                                              ; PONG            ; work         ;
-;    |lpm_divide:Div0|                  ; 729 (0)             ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |PONG|lpm_divide:Div0                                                                              ; lpm_divide      ; work         ;
-;       |lpm_divide_sco:auto_generated| ; 729 (0)             ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |PONG|lpm_divide:Div0|lpm_divide_sco:auto_generated                                                ; lpm_divide_sco  ; work         ;
-;          |abs_divider_1dg:divider|    ; 729 (9)             ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |PONG|lpm_divide:Div0|lpm_divide_sco:auto_generated|abs_divider_1dg:divider                        ; abs_divider_1dg ; work         ;
+; |PONG                                 ; 1605 (871)          ; 91 (91)                   ; 0           ; 0          ; 0            ; 0       ; 0         ; 17   ; 0            ; 0          ; |PONG                                                                                              ; PONG            ; work         ;
+;    |lpm_divide:Div0|                  ; 734 (0)             ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |PONG|lpm_divide:Div0                                                                              ; lpm_divide      ; work         ;
+;       |lpm_divide_sco:auto_generated| ; 734 (0)             ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |PONG|lpm_divide:Div0|lpm_divide_sco:auto_generated                                                ; lpm_divide_sco  ; work         ;
+;          |abs_divider_1dg:divider|    ; 734 (9)             ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |PONG|lpm_divide:Div0|lpm_divide_sco:auto_generated|abs_divider_1dg:divider                        ; abs_divider_1dg ; work         ;
 ;             |alt_u_div_mke:divider|   ; 677 (677)           ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |PONG|lpm_divide:Div0|lpm_divide_sco:auto_generated|abs_divider_1dg:divider|alt_u_div_mke:divider  ; alt_u_div_mke   ; work         ;
-;             |lpm_abs_8b9:my_abs_num|  ; 43 (43)             ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |PONG|lpm_divide:Div0|lpm_divide_sco:auto_generated|abs_divider_1dg:divider|lpm_abs_8b9:my_abs_num ; lpm_abs_8b9     ; work         ;
+;             |lpm_abs_8b9:my_abs_num|  ; 48 (48)             ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |PONG|lpm_divide:Div0|lpm_divide_sco:auto_generated|abs_divider_1dg:divider|lpm_abs_8b9:my_abs_num ; lpm_abs_8b9     ; work         ;
 ;    |pll:pll_inst|                     ; 0 (0)               ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |PONG|pll:pll_inst                                                                                 ; pll             ; work         ;
 ;       |altpll:altpll_component|       ; 0 (0)               ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |PONG|pll:pll_inst|altpll:altpll_component                                                         ; altpll          ; work         ;
 ;          |pll_altpll:auto_generated|  ; 0 (0)               ; 0 (0)                     ; 0           ; 0          ; 0            ; 0       ; 0         ; 0    ; 0            ; 0          ; |PONG|pll:pll_inst|altpll:altpll_component|pll_altpll:auto_generated                               ; pll_altpll      ; work         ;
@@ -292,92 +289,91 @@ Encoding Type:  One-Hot
 +-------------------------+-------------------------+-------------------------+-------------------------+-------------------------+
 
 
-Encoding Type:  One-Hot
-+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-; State Machine - |PONG|ball_dir                                                                                                                                                                                                              ;
-+-----------------+--------------+-------------+--------------+------------+--------------+-------------+--------------+-----------------+-------------+--------------+------------+--------------+-------------+--------------+--------------+
-; Name            ; ball_dir.NNW ; ball_dir.NW ; ball_dir.WNW ; ball_dir.W ; ball_dir.WSW ; ball_dir.SW ; ball_dir.SSW ; ball_dir.NO_DIR ; ball_dir.SE ; ball_dir.ESE ; ball_dir.E ; ball_dir.ENE ; ball_dir.NE ; ball_dir.NNE ; ball_dir.SSE ;
-+-----------------+--------------+-------------+--------------+------------+--------------+-------------+--------------+-----------------+-------------+--------------+------------+--------------+-------------+--------------+--------------+
-; ball_dir.SSE    ; 0            ; 0           ; 0            ; 0          ; 0            ; 0           ; 0            ; 0               ; 0           ; 0            ; 0          ; 0            ; 0           ; 0            ; 0            ;
-; ball_dir.NNE    ; 0            ; 0           ; 0            ; 0          ; 0            ; 0           ; 0            ; 0               ; 0           ; 0            ; 0          ; 0            ; 0           ; 1            ; 1            ;
-; ball_dir.NE     ; 0            ; 0           ; 0            ; 0          ; 0            ; 0           ; 0            ; 0               ; 0           ; 0            ; 0          ; 0            ; 1           ; 0            ; 1            ;
-; ball_dir.ENE    ; 0            ; 0           ; 0            ; 0          ; 0            ; 0           ; 0            ; 0               ; 0           ; 0            ; 0          ; 1            ; 0           ; 0            ; 1            ;
-; ball_dir.E      ; 0            ; 0           ; 0            ; 0          ; 0            ; 0           ; 0            ; 0               ; 0           ; 0            ; 1          ; 0            ; 0           ; 0            ; 1            ;
-; ball_dir.ESE    ; 0            ; 0           ; 0            ; 0          ; 0            ; 0           ; 0            ; 0               ; 0           ; 1            ; 0          ; 0            ; 0           ; 0            ; 1            ;
-; ball_dir.SE     ; 0            ; 0           ; 0            ; 0          ; 0            ; 0           ; 0            ; 0               ; 1           ; 0            ; 0          ; 0            ; 0           ; 0            ; 1            ;
-; ball_dir.NO_DIR ; 0            ; 0           ; 0            ; 0          ; 0            ; 0           ; 0            ; 1               ; 0           ; 0            ; 0          ; 0            ; 0           ; 0            ; 1            ;
-; ball_dir.SSW    ; 0            ; 0           ; 0            ; 0          ; 0            ; 0           ; 1            ; 0               ; 0           ; 0            ; 0          ; 0            ; 0           ; 0            ; 1            ;
-; ball_dir.SW     ; 0            ; 0           ; 0            ; 0          ; 0            ; 1           ; 0            ; 0               ; 0           ; 0            ; 0          ; 0            ; 0           ; 0            ; 1            ;
-; ball_dir.WSW    ; 0            ; 0           ; 0            ; 0          ; 1            ; 0           ; 0            ; 0               ; 0           ; 0            ; 0          ; 0            ; 0           ; 0            ; 1            ;
-; ball_dir.W      ; 0            ; 0           ; 0            ; 1          ; 0            ; 0           ; 0            ; 0               ; 0           ; 0            ; 0          ; 0            ; 0           ; 0            ; 1            ;
-; ball_dir.WNW    ; 0            ; 0           ; 1            ; 0          ; 0            ; 0           ; 0            ; 0               ; 0           ; 0            ; 0          ; 0            ; 0           ; 0            ; 1            ;
-; ball_dir.NW     ; 0            ; 1           ; 0            ; 0          ; 0            ; 0           ; 0            ; 0               ; 0           ; 0            ; 0          ; 0            ; 0           ; 0            ; 1            ;
-; ball_dir.NNW    ; 1            ; 0           ; 0            ; 0          ; 0            ; 0           ; 0            ; 0               ; 0           ; 0            ; 0          ; 0            ; 0           ; 0            ; 1            ;
-+-----------------+--------------+-------------+--------------+------------+--------------+-------------+--------------+-----------------+-------------+--------------+------------+--------------+-------------+--------------+--------------+
++----------------------------------------------------------------------------------------------------+
+; User-Specified and Inferred Latches                                                                ;
++-----------------------------------------------------+---------------------+------------------------+
+; Latch Name                                          ; Latch Enable Signal ; Free of Timing Hazards ;
++-----------------------------------------------------+---------------------+------------------------+
+; \ball:new_pos.y[8]                                  ; \ball:new_pos.y[8]  ; yes                    ;
+; ball_dir.NW_2420                                    ; vga_en              ; yes                    ;
+; ball_pos.x[9]                                       ; vga_en              ; yes                    ;
+; ball_pos.x[7]                                       ; vga_en              ; yes                    ;
+; ball_pos.x[5]                                       ; vga_en              ; yes                    ;
+; ball_pos.x[6]                                       ; vga_en              ; yes                    ;
+; ball_pos.x[8]                                       ; vga_en              ; yes                    ;
+; ball_pos.x[4]                                       ; vga_en              ; yes                    ;
+; ball_pos.x[3]                                       ; vga_en              ; yes                    ;
+; ball_pos.x[2]                                       ; vga_en              ; yes                    ;
+; ball_pos.y[8]                                       ; vga_en              ; yes                    ;
+; ball_pos.y[7]                                       ; vga_en              ; yes                    ;
+; ball_pos.y[6]                                       ; vga_en              ; yes                    ;
+; ball_pos.y[4]                                       ; vga_en              ; yes                    ;
+; ball_pos.y[5]                                       ; vga_en              ; yes                    ;
+; ball_pos.y[3]                                       ; vga_en              ; yes                    ;
+; ball_pos.y[2]                                       ; vga_en              ; yes                    ;
+; ball_pos.y[1]                                       ; vga_en              ; yes                    ;
+; ball_pos.y[0]                                       ; vga_en              ; yes                    ;
+; ball_dir.W_2430                                     ; vga_en              ; yes                    ;
+; ball_dir.SW_2440                                    ; vga_en              ; yes                    ;
+; ball_dir.E_2465                                     ; vga_en              ; yes                    ;
+; ball_dir.SE_2455                                    ; vga_en              ; yes                    ;
+; ball_dir.NE_2475                                    ; vga_en              ; yes                    ;
+; ball_dir.NNE_2480                                   ; vga_en              ; yes                    ;
+; ball_dir.NNW_2415                                   ; vga_en              ; yes                    ;
+; ball_dir.WNW_2425                                   ; vga_en              ; yes                    ;
+; ball_dir.WSW_2435                                   ; vga_en              ; yes                    ;
+; ball_dir.SSE_2450                                   ; vga_en              ; yes                    ;
+; ball_dir.ESE_2460                                   ; vga_en              ; yes                    ;
+; ball_dir.ENE_2470                                   ; vga_en              ; yes                    ;
+; ball_dir.SSW_2445                                   ; vga_en              ; yes                    ;
+; \ball:new_pos.y[7]                                  ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_pos.y[6]                                  ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_pos.y[5]                                  ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_pos.y[4]                                  ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_pos.y[3]                                  ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_pos.y[2]                                  ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_pos.y[1]                                  ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_pos.y[0]                                  ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_pos.x[9]                                  ; \ball:new_pos.y[8]  ; yes                    ;
+; ball_pos.x[1]                                       ; vga_en              ; yes                    ;
+; ball_pos.x[0]                                       ; vga_en              ; yes                    ;
+; \ball:new_pos.x[8]                                  ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_pos.x[7]                                  ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_pos.x[6]                                  ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_pos.x[5]                                  ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_pos.x[4]                                  ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_pos.x[3]                                  ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_pos.x[2]                                  ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_pos.x[1]                                  ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_pos.x[0]                                  ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_dir.NW_2773                               ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_dir.W_2795                                ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_dir.SW_2817                               ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_dir.E_2872                                ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_dir.SE_2850                               ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_dir.NE_2894                               ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_dir.NNE_2905                              ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_dir.NNW_2762                              ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_dir.WNW_2784                              ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_dir.WSW_2806                              ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_dir.SSE_2839                              ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_dir.ESE_2861                              ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_dir.ENE_2883                              ; \ball:new_pos.y[8]  ; yes                    ;
+; \ball:new_dir.SSW_2828                              ; \ball:new_pos.y[8]  ; yes                    ;
+; Number of user-specified and inferred latches = 66  ;                     ;                        ;
++-----------------------------------------------------+---------------------+------------------------+
+Note: All latches listed above may not be present at the end of synthesis due to various synthesis optimizations.
 
 
-Encoding Type:  One-Hot
-+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-; State Machine - |PONG|\ball:new_dir                                                                                                                                                                                                                                                                                         ;
-+----------------------+-------------------+------------------+-------------------+-----------------+-------------------+------------------+-------------------+----------------------+------------------+-------------------+-----------------+-------------------+------------------+-------------------+-------------------+
-; Name                 ; \ball:new_dir.NNW ; \ball:new_dir.NW ; \ball:new_dir.WNW ; \ball:new_dir.W ; \ball:new_dir.WSW ; \ball:new_dir.SW ; \ball:new_dir.SSW ; \ball:new_dir.NO_DIR ; \ball:new_dir.SE ; \ball:new_dir.ESE ; \ball:new_dir.E ; \ball:new_dir.ENE ; \ball:new_dir.NE ; \ball:new_dir.NNE ; \ball:new_dir.SSE ;
-+----------------------+-------------------+------------------+-------------------+-----------------+-------------------+------------------+-------------------+----------------------+------------------+-------------------+-----------------+-------------------+------------------+-------------------+-------------------+
-; \ball:new_dir.SSE    ; 0                 ; 0                ; 0                 ; 0               ; 0                 ; 0                ; 0                 ; 0                    ; 0                ; 0                 ; 0               ; 0                 ; 0                ; 0                 ; 0                 ;
-; \ball:new_dir.NNE    ; 0                 ; 0                ; 0                 ; 0               ; 0                 ; 0                ; 0                 ; 0                    ; 0                ; 0                 ; 0               ; 0                 ; 0                ; 1                 ; 1                 ;
-; \ball:new_dir.NE     ; 0                 ; 0                ; 0                 ; 0               ; 0                 ; 0                ; 0                 ; 0                    ; 0                ; 0                 ; 0               ; 0                 ; 1                ; 0                 ; 1                 ;
-; \ball:new_dir.ENE    ; 0                 ; 0                ; 0                 ; 0               ; 0                 ; 0                ; 0                 ; 0                    ; 0                ; 0                 ; 0               ; 1                 ; 0                ; 0                 ; 1                 ;
-; \ball:new_dir.E      ; 0                 ; 0                ; 0                 ; 0               ; 0                 ; 0                ; 0                 ; 0                    ; 0                ; 0                 ; 1               ; 0                 ; 0                ; 0                 ; 1                 ;
-; \ball:new_dir.ESE    ; 0                 ; 0                ; 0                 ; 0               ; 0                 ; 0                ; 0                 ; 0                    ; 0                ; 1                 ; 0               ; 0                 ; 0                ; 0                 ; 1                 ;
-; \ball:new_dir.SE     ; 0                 ; 0                ; 0                 ; 0               ; 0                 ; 0                ; 0                 ; 0                    ; 1                ; 0                 ; 0               ; 0                 ; 0                ; 0                 ; 1                 ;
-; \ball:new_dir.NO_DIR ; 0                 ; 0                ; 0                 ; 0               ; 0                 ; 0                ; 0                 ; 1                    ; 0                ; 0                 ; 0               ; 0                 ; 0                ; 0                 ; 1                 ;
-; \ball:new_dir.SSW    ; 0                 ; 0                ; 0                 ; 0               ; 0                 ; 0                ; 1                 ; 0                    ; 0                ; 0                 ; 0               ; 0                 ; 0                ; 0                 ; 1                 ;
-; \ball:new_dir.SW     ; 0                 ; 0                ; 0                 ; 0               ; 0                 ; 1                ; 0                 ; 0                    ; 0                ; 0                 ; 0               ; 0                 ; 0                ; 0                 ; 1                 ;
-; \ball:new_dir.WSW    ; 0                 ; 0                ; 0                 ; 0               ; 1                 ; 0                ; 0                 ; 0                    ; 0                ; 0                 ; 0               ; 0                 ; 0                ; 0                 ; 1                 ;
-; \ball:new_dir.W      ; 0                 ; 0                ; 0                 ; 1               ; 0                 ; 0                ; 0                 ; 0                    ; 0                ; 0                 ; 0               ; 0                 ; 0                ; 0                 ; 1                 ;
-; \ball:new_dir.WNW    ; 0                 ; 0                ; 1                 ; 0               ; 0                 ; 0                ; 0                 ; 0                    ; 0                ; 0                 ; 0               ; 0                 ; 0                ; 0                 ; 1                 ;
-; \ball:new_dir.NW     ; 0                 ; 1                ; 0                 ; 0               ; 0                 ; 0                ; 0                 ; 0                    ; 0                ; 0                 ; 0               ; 0                 ; 0                ; 0                 ; 1                 ;
-; \ball:new_dir.NNW    ; 1                 ; 0                ; 0                 ; 0               ; 0                 ; 0                ; 0                 ; 0                    ; 0                ; 0                 ; 0               ; 0                 ; 0                ; 0                 ; 1                 ;
-+----------------------+-------------------+------------------+-------------------+-----------------+-------------------+------------------+-------------------+----------------------+------------------+-------------------+-----------------+-------------------+------------------+-------------------+-------------------+
-
-
-+---------------------------------------------------------------------------------+
-; Registers Removed During Synthesis                                              ;
-+----------------------------------------+----------------------------------------+
-; Register name                          ; Reason for Removal                     ;
-+----------------------------------------+----------------------------------------+
-; b_b[1..3]                              ; Merged with b_b[0]                     ;
-; b_g[0..3]                              ; Merged with b_b[0]                     ;
-; b_r[0..3]                              ; Merged with b_b[0]                     ;
-; ball_pos.x[9]                          ; Merged with \ball:new_pos.x[9]         ;
-; ball_pos.x[7]                          ; Merged with \ball:new_pos.x[7]         ;
-; ball_pos.x[5]                          ; Merged with \ball:new_pos.x[5]         ;
-; ball_pos.x[4]                          ; Merged with \ball:new_pos.x[4]         ;
-; ball_pos.x[3]                          ; Merged with \ball:new_pos.x[3]         ;
-; ball_pos.x[2]                          ; Merged with \ball:new_pos.x[2]         ;
-; ball_pos.x[1]                          ; Merged with \ball:new_pos.x[1]         ;
-; ball_pos.x[0]                          ; Merged with \ball:new_pos.x[0]         ;
-; ball_pos.y[8]                          ; Merged with \ball:new_pos.y[8]         ;
-; ball_pos.y[7]                          ; Merged with \ball:new_pos.y[7]         ;
-; ball_pos.y[4]                          ; Merged with \ball:new_pos.y[4]         ;
-; ball_pos.y[3]                          ; Merged with \ball:new_pos.y[3]         ;
-; ball_pos.y[1]                          ; Merged with \ball:new_pos.y[1]         ;
-; ball_pos.y[0]                          ; Merged with \ball:new_pos.y[0]         ;
-; vga_hor_state.vga_hor_D                ; Merged with h_en                       ;
-; vga_ver_state.vga_ver_D                ; Merged with v_en                       ;
-; \ball:new_dir.NO_DIR                   ; Stuck at GND due to stuck port data_in ;
-; ball_dir.NO_DIR                        ; Stuck at GND due to stuck port data_in ;
-; Total Number of Removed Registers = 29 ;                                        ;
-+----------------------------------------+----------------------------------------+
-
-
-+-------------------------------------------------------------------------------------------+
-; Removed Registers Triggering Further Register Optimizations                               ;
-+----------------------+---------------------------+----------------------------------------+
-; Register name        ; Reason for Removal        ; Registers Removed due to This Register ;
-+----------------------+---------------------------+----------------------------------------+
-; \ball:new_dir.NO_DIR ; Stuck at GND              ; ball_dir.NO_DIR                        ;
-;                      ; due to stuck port data_in ;                                        ;
-+----------------------+---------------------------+----------------------------------------+
++------------------------------------------------------------+
+; Registers Removed During Synthesis                         ;
++---------------------------------------+--------------------+
+; Register name                         ; Reason for Removal ;
++---------------------------------------+--------------------+
+; vga_hor_state.vga_hor_D               ; Merged with h_en   ;
+; vga_ver_state.vga_ver_D               ; Merged with v_en   ;
+; Total Number of Removed Registers = 2 ;                    ;
++---------------------------------------+--------------------+
 
 
 +------------------------------------------------------+
@@ -385,28 +381,14 @@ Encoding Type:  One-Hot
 +----------------------------------------------+-------+
 ; Statistic                                    ; Value ;
 +----------------------------------------------+-------+
-; Total registers                              ; 144   ;
-; Number of registers using Synchronous Clear  ; 92    ;
+; Total registers                              ; 91    ;
+; Number of registers using Synchronous Clear  ; 78    ;
 ; Number of registers using Synchronous Load   ; 2     ;
 ; Number of registers using Asynchronous Clear ; 0     ;
 ; Number of registers using Asynchronous Load  ; 0     ;
-; Number of registers using Clock Enable       ; 52    ;
+; Number of registers using Clock Enable       ; 0     ;
 ; Number of registers using Preset             ; 0     ;
 +----------------------------------------------+-------+
-
-
-+--------------------------------------------------+
-; Inverted Register Statistics                     ;
-+----------------------------------------+---------+
-; Inverted Register                      ; Fan out ;
-+----------------------------------------+---------+
-; \ball:new_pos.x[8]                     ; 1       ;
-; \ball:new_pos.x[6]                     ; 1       ;
-; \ball:new_pos.y[2]                     ; 1       ;
-; \ball:new_pos.y[5]                     ; 1       ;
-; \ball:new_pos.y[6]                     ; 1       ;
-; Total number of inverted registers = 5 ;         ;
-+----------------------------------------+---------+
 
 
 +------------------------------------------------------------------------------------------------------------------------------------------+
@@ -414,17 +396,19 @@ Encoding Type:  One-Hot
 +--------------------+-----------+---------------+----------------------+------------------------+------------+----------------------------+
 ; Multiplexer Inputs ; Bus Width ; Baseline Area ; Area if Restructured ; Saving if Restructured ; Registered ; Example Multiplexer Output ;
 +--------------------+-----------+---------------+----------------------+------------------------+------------+----------------------------+
-; 3:1                ; 19 bits   ; 38 LEs        ; 19 LEs               ; 19 LEs                 ; Yes        ; |PONG|\ball:new_pos.x[3]   ;
-; 4:1                ; 9 bits    ; 18 LEs        ; 9 LEs                ; 9 LEs                  ; Yes        ; |PONG|line_num[0]          ;
-; 4:1                ; 31 bits   ; 62 LEs        ; 31 LEs               ; 31 LEs                 ; Yes        ; |PONG|\vga_ver_fsm:cnt[0]  ;
-; 4:1                ; 10 bits   ; 20 LEs        ; 10 LEs               ; 10 LEs                 ; Yes        ; |PONG|pixel_num[4]         ;
-; 4:1                ; 31 bits   ; 62 LEs        ; 31 LEs               ; 31 LEs                 ; Yes        ; |PONG|\vga_hor_fsm:cnt[0]  ;
-; 3:1                ; 5 bits    ; 10 LEs        ; 5 LEs                ; 5 LEs                  ; Yes        ; |PONG|\ball:new_pos.y[6]   ;
-; 3:1                ; 30 bits   ; 60 LEs        ; 60 LEs               ; 0 LEs                  ; No         ; |PONG|ball_dir             ;
-; 3:1                ; 2 bits    ; 4 LEs         ; 4 LEs                ; 0 LEs                  ; No         ; |PONG|l6_ref[0]            ;
-; 15:1               ; 4 bits    ; 40 LEs        ; 24 LEs               ; 16 LEs                 ; No         ; |PONG|new_pos              ;
-; 15:1               ; 3 bits    ; 30 LEs        ; 18 LEs               ; 12 LEs                 ; No         ; |PONG|new_pos              ;
-; 16:1               ; 8 bits    ; 80 LEs        ; 40 LEs               ; 40 LEs                 ; No         ; |PONG|new_pos              ;
+; 4:1                ; 9 bits    ; 18 LEs        ; 9 LEs                ; 9 LEs                  ; Yes        ; |PONG|line_num[4]          ;
+; 4:1                ; 31 bits   ; 62 LEs        ; 31 LEs               ; 31 LEs                 ; Yes        ; |PONG|\vga_ver_fsm:cnt[10] ;
+; 4:1                ; 10 bits   ; 20 LEs        ; 10 LEs               ; 10 LEs                 ; Yes        ; |PONG|pixel_num[0]         ;
+; 4:1                ; 31 bits   ; 62 LEs        ; 31 LEs               ; 31 LEs                 ; Yes        ; |PONG|\vga_hor_fsm:cnt[17] ;
+; 3:1                ; 2 bits    ; 4 LEs         ; 4 LEs                ; 0 LEs                  ; No         ; |PONG|l6_ref[2]            ;
+; 4:1                ; 4 bits    ; 8 LEs         ; 4 LEs                ; 4 LEs                  ; No         ; |PONG|b2_ref[1]            ;
+; 4:1                ; 4 bits    ; 8 LEs         ; 8 LEs                ; 0 LEs                  ; No         ; |PONG|b1_ref[2]            ;
+; 4:1                ; 4 bits    ; 8 LEs         ; 8 LEs                ; 0 LEs                  ; No         ; |PONG|b3_ref[0]            ;
+; 4:1                ; 4 bits    ; 8 LEs         ; 4 LEs                ; 4 LEs                  ; No         ; |PONG|b6_ref[1]            ;
+; 4:1                ; 4 bits    ; 8 LEs         ; 8 LEs                ; 0 LEs                  ; No         ; |PONG|b9_ref[2]            ;
+; 4:1                ; 4 bits    ; 8 LEs         ; 8 LEs                ; 0 LEs                  ; No         ; |PONG|b8_ref[0]            ;
+; 13:1               ; 7 bits    ; 56 LEs        ; 28 LEs               ; 28 LEs                 ; No         ; |PONG|Selector47           ;
+; 14:1               ; 8 bits    ; 72 LEs        ; 32 LEs               ; 40 LEs                 ; No         ; |PONG|Selector32           ;
 +--------------------+-----------+---------------+----------------------+------------------------+------------+----------------------------+
 
 
@@ -848,26 +832,24 @@ Note: In order to hide this table in the UI and the text report file, please set
 ; Type                  ; Count                       ;
 +-----------------------+-----------------------------+
 ; boundary_port         ; 17                          ;
-; cycloneiii_ff         ; 144                         ;
-;     ENA               ; 38                          ;
-;     ENA SCLR          ; 14                          ;
+; cycloneiii_ff         ; 91                          ;
 ;     SCLR              ; 78                          ;
 ;     SLD               ; 2                           ;
-;     plain             ; 12                          ;
-; cycloneiii_lcell_comb ; 1477                        ;
+;     plain             ; 11                          ;
+; cycloneiii_lcell_comb ; 1605                        ;
 ;     arith             ; 509                         ;
 ;         2 data inputs ; 281                         ;
 ;         3 data inputs ; 228                         ;
-;     normal            ; 968                         ;
+;     normal            ; 1096                        ;
 ;         0 data inputs ; 34                          ;
-;         1 data inputs ; 23                          ;
-;         2 data inputs ; 323                         ;
-;         3 data inputs ; 111                         ;
-;         4 data inputs ; 477                         ;
+;         1 data inputs ; 18                          ;
+;         2 data inputs ; 308                         ;
+;         3 data inputs ; 133                         ;
+;         4 data inputs ; 603                         ;
 ; cycloneiii_pll        ; 1                           ;
 ;                       ;                             ;
-; Max LUT depth         ; 79.50                       ;
-; Average LUT depth     ; 44.04                       ;
+; Max LUT depth         ; 78.50                       ;
+; Average LUT depth     ; 39.57                       ;
 +-----------------------+-----------------------------+
 
 
@@ -886,7 +868,7 @@ Note: In order to hide this table in the UI and the text report file, please set
 Info: *******************************************************************
 Info: Running Quartus Prime Analysis & Synthesis
     Info: Version 18.1.0 Build 625 09/12/2018 SJ Lite Edition
-    Info: Processing started: Sat Nov 23 16:48:36 2019
+    Info: Processing started: Mon Nov 25 12:47:44 2019
 Info: Command: quartus_map --read_settings_files=on --write_settings_files=off pong -c pong
 Warning (18236): Number of processors has not been specified which may cause overloading on shared machines.  Set the global assignment NUM_PARALLEL_PROCESSORS in your QSF to an appropriate value for best performance.
 Info (20030): Parallel compilation is enabled and will use 4 of the 4 processors detected
@@ -897,7 +879,143 @@ Info (12021): Found 2 design units, including 1 entities, in source file pll.vhd
     Info (12022): Found design unit 1: pll-SYN File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pll.vhd Line: 51
     Info (12023): Found entity 1: pll File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pll.vhd Line: 42
 Info (12127): Elaborating entity "pong" for the top level hierarchy
-Info (12128): Elaborating entity "pll" for hierarchy "pll:pll_inst" File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 737
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(145): object "b1_r" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 145
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(146): object "b1_g" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 146
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(147): object "b1_b" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 147
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(151): object "b2_r" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 151
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(152): object "b2_g" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 152
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(153): object "b2_b" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 153
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(157): object "b3_r" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 157
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(158): object "b3_g" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 158
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(159): object "b3_b" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 159
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(163): object "b4_r" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 163
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(164): object "b4_g" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 164
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(165): object "b4_b" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 165
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(169): object "b5_r" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 169
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(170): object "b5_g" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 170
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(171): object "b5_b" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 171
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(175): object "b6_r" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 175
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(176): object "b6_g" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 176
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(177): object "b6_b" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 177
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(181): object "b7_r" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 181
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(182): object "b7_g" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 182
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(183): object "b7_b" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 183
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(187): object "b8_r" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 187
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(188): object "b8_g" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 188
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(189): object "b8_b" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 189
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(193): object "b9_r" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 193
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(194): object "b9_g" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 194
+Warning (10036): Verilog HDL or VHDL warning at pong.vhdl(195): object "b9_b" assigned a value but never read File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 195
+Warning (10492): VHDL Process Statement warning at pong.vhdl(222): signal "KEY" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Warning (10492): VHDL Process Statement warning at pong.vhdl(223): signal "vga_en" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 223
+Warning (10492): VHDL Process Statement warning at pong.vhdl(224): signal "line_num" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 224
+Warning (10492): VHDL Process Statement warning at pong.vhdl(227): signal "ball_dir" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 227
+Warning (10492): VHDL Process Statement warning at pong.vhdl(229): signal "ref" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 229
+Warning (10492): VHDL Process Statement warning at pong.vhdl(239): signal "ref" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 239
+Warning (10492): VHDL Process Statement warning at pong.vhdl(249): signal "ref" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 249
+Warning (10492): VHDL Process Statement warning at pong.vhdl(259): signal "ref" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 259
+Warning (10492): VHDL Process Statement warning at pong.vhdl(269): signal "ref" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 269
+Warning (10492): VHDL Process Statement warning at pong.vhdl(279): signal "ref" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 279
+Warning (10492): VHDL Process Statement warning at pong.vhdl(289): signal "ref" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 289
+Warning (10492): VHDL Process Statement warning at pong.vhdl(299): signal "ref" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 299
+Warning (10492): VHDL Process Statement warning at pong.vhdl(309): signal "ref" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 309
+Warning (10492): VHDL Process Statement warning at pong.vhdl(319): signal "ref" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 319
+Warning (10492): VHDL Process Statement warning at pong.vhdl(329): signal "ref" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 329
+Warning (10492): VHDL Process Statement warning at pong.vhdl(339): signal "ref" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 339
+Warning (10492): VHDL Process Statement warning at pong.vhdl(349): signal "ref" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 349
+Warning (10492): VHDL Process Statement warning at pong.vhdl(359): signal "ref" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 359
+Warning (10492): VHDL Process Statement warning at pong.vhdl(374): signal "ball_pos" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 374
+Warning (10492): VHDL Process Statement warning at pong.vhdl(375): signal "ball_pos" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 375
+Warning (10492): VHDL Process Statement warning at pong.vhdl(376): signal "ball_pos" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 376
+Warning (10492): VHDL Process Statement warning at pong.vhdl(377): signal "ball_pos" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 377
+Warning (10492): VHDL Process Statement warning at pong.vhdl(378): signal "ball_pos" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 378
+Warning (10492): VHDL Process Statement warning at pong.vhdl(379): signal "ball_pos" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 379
+Warning (10492): VHDL Process Statement warning at pong.vhdl(380): signal "ball_pos" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 380
+Warning (10492): VHDL Process Statement warning at pong.vhdl(381): signal "ball_pos" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 381
+Warning (10492): VHDL Process Statement warning at pong.vhdl(382): signal "ball_pos" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 382
+Warning (10492): VHDL Process Statement warning at pong.vhdl(383): signal "ball_pos" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 383
+Warning (10492): VHDL Process Statement warning at pong.vhdl(384): signal "ball_pos" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 384
+Warning (10492): VHDL Process Statement warning at pong.vhdl(385): signal "ball_pos" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 385
+Warning (10492): VHDL Process Statement warning at pong.vhdl(386): signal "ball_pos" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 386
+Warning (10492): VHDL Process Statement warning at pong.vhdl(387): signal "ball_pos" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 387
+Warning (10492): VHDL Process Statement warning at pong.vhdl(397): signal "line_num" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 397
+Warning (10492): VHDL Process Statement warning at pong.vhdl(399): signal "line_num" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 399
+Warning (10492): VHDL Process Statement warning at pong.vhdl(401): signal "line_num" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 401
+Warning (10492): VHDL Process Statement warning at pong.vhdl(418): signal "ball_pos" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 418
+Warning (10492): VHDL Process Statement warning at pong.vhdl(419): signal "ball_dir" is read inside the Process Statement but isn't in the Process Statement's sensitivity list File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 419
+Warning (10631): VHDL Process Statement warning at pong.vhdl(218): inferring latch(es) for signal or variable "new_dir", which holds its previous value in one or more paths through the process File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Warning (10631): VHDL Process Statement warning at pong.vhdl(218): inferring latch(es) for signal or variable "new_pos", which holds its previous value in one or more paths through the process File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Warning (10631): VHDL Process Statement warning at pong.vhdl(218): inferring latch(es) for signal or variable "ball_pos", which holds its previous value in one or more paths through the process File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Warning (10631): VHDL Process Statement warning at pong.vhdl(218): inferring latch(es) for signal or variable "ball_dir", which holds its previous value in one or more paths through the process File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_dir.NNW" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_dir.NW" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_dir.WNW" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_dir.W" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_dir.WSW" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_dir.SW" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_dir.SSW" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_dir.SSE" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_dir.SE" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_dir.ESE" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_dir.E" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_dir.ENE" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_dir.NE" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_dir.NNE" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_dir.NO_DIR" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_pos.y[0]" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_pos.y[1]" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_pos.y[2]" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_pos.y[3]" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_pos.y[4]" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_pos.y[5]" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_pos.y[6]" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_pos.y[7]" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_pos.y[8]" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_pos.x[0]" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_pos.x[1]" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_pos.x[2]" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_pos.x[3]" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_pos.x[4]" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_pos.x[5]" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_pos.x[6]" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_pos.x[7]" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_pos.x[8]" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball_pos.x[9]" at pong.vhdl(218) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 218
+Info (10041): Inferred latch for "ball:new_pos.y[0]" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_pos.y[1]" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_pos.y[2]" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_pos.y[3]" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_pos.y[4]" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_pos.y[5]" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_pos.y[6]" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_pos.y[7]" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_pos.y[8]" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_pos.x[0]" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_pos.x[1]" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_pos.x[2]" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_pos.x[3]" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_pos.x[4]" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_pos.x[5]" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_pos.x[6]" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_pos.x[7]" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_pos.x[8]" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_pos.x[9]" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_dir.NNW" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_dir.NW" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_dir.WNW" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_dir.W" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_dir.WSW" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_dir.SW" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_dir.SSW" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_dir.SSE" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_dir.SE" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_dir.ESE" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_dir.E" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_dir.ENE" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_dir.NE" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_dir.NNE" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (10041): Inferred latch for "ball:new_dir.NO_DIR" at pong.vhdl(222) File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 222
+Info (12128): Elaborating entity "pll" for hierarchy "pll:pll_inst" File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 1305
 Info (12128): Elaborating entity "altpll" for hierarchy "pll:pll_inst|altpll:altpll_component" File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pll.vhd Line: 133
 Info (12130): Elaborated megafunction instantiation "pll:pll_inst|altpll:altpll_component" File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pll.vhd Line: 133
 Info (12133): Instantiated megafunction "pll:pll_inst|altpll:altpll_component" with the following parameter: File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pll.vhd Line: 133
@@ -959,9 +1077,9 @@ Info (12021): Found 1 design units, including 1 entities, in source file db/pll_
     Info (12023): Found entity 1: pll_altpll File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/db/pll_altpll.v Line: 29
 Info (12128): Elaborating entity "pll_altpll" for hierarchy "pll:pll_inst|altpll:altpll_component|pll_altpll:auto_generated" File: c:/intelfpga_lite/18.1/quartus/libraries/megafunctions/altpll.tdf Line: 897
 Info (278001): Inferred 1 megafunctions from design logic
-    Info (278004): Inferred divider/modulo megafunction ("lpm_divide") from the following logic: "Div0" File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 710
-Info (12130): Elaborated megafunction instantiation "lpm_divide:Div0" File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 710
-Info (12133): Instantiated megafunction "lpm_divide:Div0" with the following parameter: File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 710
+    Info (278004): Inferred divider/modulo megafunction ("lpm_divide") from the following logic: "Div0" File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 1278
+Info (12130): Elaborated megafunction instantiation "lpm_divide:Div0" File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 1278
+Info (12133): Instantiated megafunction "lpm_divide:Div0" with the following parameter: File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 1278
     Info (12134): Parameter "LPM_WIDTHN" = "32"
     Info (12134): Parameter "LPM_WIDTHD" = "11"
     Info (12134): Parameter "LPM_NREPRESENTATION" = "SIGNED"
@@ -983,19 +1101,47 @@ Info (12021): Found 1 design units, including 1 entities, in source file db/lpm_
     Info (12023): Found entity 1: lpm_abs_8b9 File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/db/lpm_abs_8b9.tdf Line: 24
 Info (13014): Ignored 31 buffer(s)
     Info (13016): Ignored 31 CARRY_SUM buffer(s)
+Warning (13012): Latch \ball:new_dir.NW_2773 has unsafe behavior
+    Warning (13013): Ports D and ENA on the latch are fed by the same signal line_num[8] File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 1216
+Warning (13012): Latch \ball:new_dir.W_2795 has unsafe behavior
+    Warning (13013): Ports D and ENA on the latch are fed by the same signal line_num[8] File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 1216
+Warning (13012): Latch \ball:new_dir.SW_2817 has unsafe behavior
+    Warning (13013): Ports D and ENA on the latch are fed by the same signal pixel_num[5] File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 1124
+Warning (13012): Latch \ball:new_dir.E_2872 has unsafe behavior
+    Warning (13013): Ports D and ENA on the latch are fed by the same signal pixel_num[5] File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 1124
+Warning (13012): Latch \ball:new_dir.SE_2850 has unsafe behavior
+    Warning (13013): Ports D and ENA on the latch are fed by the same signal pixel_num[5] File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 1124
+Warning (13012): Latch \ball:new_dir.NE_2894 has unsafe behavior
+    Warning (13013): Ports D and ENA on the latch are fed by the same signal pixel_num[5] File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 1124
+Warning (13012): Latch \ball:new_dir.NNE_2905 has unsafe behavior
+    Warning (13013): Ports D and ENA on the latch are fed by the same signal pixel_num[5] File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 1124
+Warning (13012): Latch \ball:new_dir.NNW_2762 has unsafe behavior
+    Warning (13013): Ports D and ENA on the latch are fed by the same signal line_num[8] File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 1216
+Warning (13012): Latch \ball:new_dir.WNW_2784 has unsafe behavior
+    Warning (13013): Ports D and ENA on the latch are fed by the same signal pixel_num[5] File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 1124
+Warning (13012): Latch \ball:new_dir.WSW_2806 has unsafe behavior
+    Warning (13013): Ports D and ENA on the latch are fed by the same signal pixel_num[5] File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 1124
+Warning (13012): Latch \ball:new_dir.SSE_2839 has unsafe behavior
+    Warning (13013): Ports D and ENA on the latch are fed by the same signal pixel_num[5] File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 1124
+Warning (13012): Latch \ball:new_dir.ESE_2861 has unsafe behavior
+    Warning (13013): Ports D and ENA on the latch are fed by the same signal pixel_num[5] File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 1124
+Warning (13012): Latch \ball:new_dir.ENE_2883 has unsafe behavior
+    Warning (13013): Ports D and ENA on the latch are fed by the same signal pixel_num[5] File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 1124
+Warning (13012): Latch \ball:new_dir.SSW_2828 has unsafe behavior
+    Warning (13013): Ports D and ENA on the latch are fed by the same signal pixel_num[5] File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 1124
 Info (286030): Timing-Driven Synthesis is running
 Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
     Info (16011): Adding 1 node(s), including 0 DDIO, 1 PLL, 0 transceiver and 0 LCELL
 Warning (21074): Design contains 1 input pin(s) that do not drive logic
     Warning (15610): No output dependent on input pin "KEY[1]" File: C:/Users/Tarrin/Documents/VHDL/ECE5930/pong/pong.vhdl Line: 23
-Info (21057): Implemented 1502 device resources after synthesis - the final resource count might be different
+Info (21057): Implemented 1625 device resources after synthesis - the final resource count might be different
     Info (21058): Implemented 3 input pins
     Info (21059): Implemented 14 output pins
-    Info (21061): Implemented 1484 logic cells
+    Info (21061): Implemented 1607 logic cells
     Info (21065): Implemented 1 PLLs
-Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 3 warnings
-    Info: Peak virtual memory: 4827 megabytes
-    Info: Processing ended: Sat Nov 23 16:48:53 2019
+Info: Quartus Prime Analysis & Synthesis was successful. 0 errors, 99 warnings
+    Info: Peak virtual memory: 4826 megabytes
+    Info: Processing ended: Mon Nov 25 12:48:01 2019
     Info: Elapsed time: 00:00:17
     Info: Total CPU time (on all processors): 00:00:30
 

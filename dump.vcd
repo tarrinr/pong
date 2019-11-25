@@ -1,5 +1,5 @@
 $date
-  Sat Nov 23 14:51:35 2019
+  Mon Nov 25 12:49:10 2019
 $end
 $version
   GHDL v0
@@ -52,6 +52,120 @@ $var reg 4 F l6_r[3:0] $end
 $var reg 4 G l6_g[3:0] $end
 $var reg 4 H l6_b[3:0] $end
 $var reg 3 I l6_ref[2:0] $end
+$var reg 4 J b1_r[3:0] $end
+$var reg 4 K b1_g[3:0] $end
+$var reg 4 L b1_b[3:0] $end
+$var reg 3 M b1_ref[2:0] $end
+$var reg 4 N b2_r[3:0] $end
+$var reg 4 O b2_g[3:0] $end
+$var reg 4 P b2_b[3:0] $end
+$var reg 3 Q b2_ref[2:0] $end
+$var reg 4 R b3_r[3:0] $end
+$var reg 4 S b3_g[3:0] $end
+$var reg 4 T b3_b[3:0] $end
+$var reg 3 U b3_ref[2:0] $end
+$var reg 4 V b4_r[3:0] $end
+$var reg 4 W b4_g[3:0] $end
+$var reg 4 X b4_b[3:0] $end
+$var reg 3 Y b4_ref[2:0] $end
+$var reg 4 Z b5_r[3:0] $end
+$var reg 4 [ b5_g[3:0] $end
+$var reg 4 \ b5_b[3:0] $end
+$var reg 3 ] b5_ref[2:0] $end
+$var reg 4 ^ b6_r[3:0] $end
+$var reg 4 _ b6_g[3:0] $end
+$var reg 4 ` b6_b[3:0] $end
+$var reg 3 a b6_ref[2:0] $end
+$var reg 4 b b7_r[3:0] $end
+$var reg 4 c b7_g[3:0] $end
+$var reg 4 d b7_b[3:0] $end
+$var reg 3 e b7_ref[2:0] $end
+$var reg 4 f b8_r[3:0] $end
+$var reg 4 g b8_g[3:0] $end
+$var reg 4 h b8_b[3:0] $end
+$var reg 3 i b8_ref[2:0] $end
+$var reg 4 j b9_r[3:0] $end
+$var reg 4 k b9_g[3:0] $end
+$var reg 4 l b9_b[3:0] $end
+$var reg 3 m b9_ref[2:0] $end
 $scope module pll_inst $end
 $upscope $end
 $enddefinitions $end
+#0
+U!
+bUU "
+b0000 #
+b0000 $
+b0000 %
+U&
+U'
+U(
+b0 )
+b0 *
+U+
+U,
+U-
+b000 .
+b0000 /
+b0000 0
+b0000 1
+b0000 2
+b0000 3
+b0000 4
+b000 5
+b0000 6
+b0000 7
+b0000 8
+b000 9
+b0000 :
+b0000 ;
+b0000 <
+b000 =
+b0000 >
+b0000 ?
+b0000 @
+b000 A
+b0000 B
+b0000 C
+b0000 D
+b000 E
+b0000 F
+b0000 G
+b0000 H
+b000 I
+b0000 J
+b0000 K
+b0000 L
+b000 M
+b0000 N
+b0000 O
+b0000 P
+b000 Q
+b0000 R
+b0000 S
+b0000 T
+b000 U
+b0000 V
+b0000 W
+b0000 X
+b000 Y
+b0000 Z
+b0000 [
+b0000 \
+b000 ]
+b0000 ^
+b0000 _
+b0000 `
+b000 a
+b0000 b
+b0000 c
+b0000 d
+b000 e
+b0000 f
+b0000 g
+b0000 h
+b000 i
+b0000 j
+b0000 k
+b0000 l
+b000 m

@@ -1,5 +1,5 @@
 Flow report for pong
-Sat Nov 23 16:49:17 2019
+Mon Nov 25 12:48:26 2019
 Quartus Prime Version 18.1.0 Build 625 09/12/2018 SJ Lite Edition
 
 
@@ -40,17 +40,17 @@ refer to the applicable agreement for further details.
 +----------------------------------------------------------------------------------+
 ; Flow Summary                                                                     ;
 +------------------------------------+---------------------------------------------+
-; Flow Status                        ; Successful - Sat Nov 23 16:49:13 2019       ;
+; Flow Status                        ; Successful - Mon Nov 25 12:48:21 2019       ;
 ; Quartus Prime Version              ; 18.1.0 Build 625 09/12/2018 SJ Lite Edition ;
 ; Revision Name                      ; pong                                        ;
 ; Top-level Entity Name              ; PONG                                        ;
 ; Family                             ; MAX 10                                      ;
 ; Device                             ; 10M50DAF484C7G                              ;
 ; Timing Models                      ; Final                                       ;
-; Total logic elements               ; 1,480 / 49,760 ( 3 % )                      ;
-;     Total combinational functions  ; 1,478 / 49,760 ( 3 % )                      ;
-;     Dedicated logic registers      ; 144 / 49,760 ( < 1 % )                      ;
-; Total registers                    ; 144                                         ;
+; Total logic elements               ; 1,611 / 49,760 ( 3 % )                      ;
+;     Total combinational functions  ; 1,606 / 49,760 ( 3 % )                      ;
+;     Dedicated logic registers      ; 91 / 49,760 ( < 1 % )                       ;
+; Total registers                    ; 91                                          ;
 ; Total pins                         ; 17 / 360 ( 5 % )                            ;
 ; Total virtual pins                 ; 0                                           ;
 ; Total memory bits                  ; 0 / 1,677,312 ( 0 % )                       ;
@@ -66,7 +66,7 @@ refer to the applicable agreement for further details.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 11/23/2019 16:48:37 ;
+; Start date & time ; 11/25/2019 12:47:44 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; pong                ;
 +-------------------+---------------------+
@@ -77,7 +77,7 @@ refer to the applicable agreement for further details.
 +-------------------------------------+----------------------------------------+---------------+-------------+------------+
 ; Assignment Name                     ; Value                                  ; Default Value ; Entity Name ; Section Id ;
 +-------------------------------------+----------------------------------------+---------------+-------------+------------+
-; COMPILER_SIGNATURE_ID               ; 10995770589206.157455291723564         ; --            ; --          ; --         ;
+; COMPILER_SIGNATURE_ID               ; 10995770589206.157471126407268         ; --            ; --          ; --         ;
 ; MAX_CORE_JUNCTION_TEMP              ; 85                                     ; --            ; --          ; --         ;
 ; MIN_CORE_JUNCTION_TEMP              ; 0                                      ; --            ; --          ; --         ;
 ; MISC_FILE                           ; pll.bsf                                ; --            ; --          ; --         ;
@@ -98,11 +98,11 @@ refer to the applicable agreement for further details.
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name          ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis ; 00:00:17     ; 1.0                     ; 4827 MB             ; 00:00:29                           ;
-; Fitter               ; 00:00:14     ; 1.2                     ; 5652 MB             ; 00:00:22                           ;
-; Assembler            ; 00:00:03     ; 1.0                     ; 4692 MB             ; 00:00:03                           ;
-; Timing Analyzer      ; 00:00:03     ; 1.4                     ; 4837 MB             ; 00:00:04                           ;
-; Total                ; 00:00:37     ; --                      ; --                  ; 00:00:58                           ;
+; Analysis & Synthesis ; 00:00:17     ; 1.0                     ; 4826 MB             ; 00:00:30                           ;
+; Fitter               ; 00:00:15     ; 1.2                     ; 5653 MB             ; 00:00:24                           ;
+; Assembler            ; 00:00:03     ; 1.0                     ; 4688 MB             ; 00:00:03                           ;
+; Timing Analyzer      ; 00:00:04     ; 1.5                     ; 4835 MB             ; 00:00:05                           ;
+; Total                ; 00:00:39     ; --                      ; --                  ; 00:01:02                           ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 

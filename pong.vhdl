@@ -141,16 +141,70 @@ architecture RTL of PONG is
     signal l6_b   : color;
     signal l6_ref : reflection;
 
+    -- block_1 outputs
+    signal b1_r   : color;
+    signal b1_g   : color;
+    signal b1_b   : color;
+    signal b1_ref : reflection;
+
+    -- block_2 outputs
+    signal b2_r   : color;
+    signal b2_g   : color;
+    signal b2_b   : color;
+    signal b2_ref : reflection;
+
+    -- block_3 outputs
+    signal b3_r   : color;
+    signal b3_g   : color;
+    signal b3_b   : color;
+    signal b3_ref : reflection;
+
+    -- block_4 outputs
+    signal b4_r   : color;
+    signal b4_g   : color;
+    signal b4_b   : color;
+    signal b4_ref : reflection;
+
+    -- block_5 outputs
+    signal b5_r   : color;
+    signal b5_g   : color;
+    signal b5_b   : color;
+    signal b5_ref : reflection;
+
+    -- block_6 outputs
+    signal b6_r   : color;
+    signal b6_g   : color;
+    signal b6_b   : color;
+    signal b6_ref : reflection;
+
+    -- block_7 outputs
+    signal b7_r   : color;
+    signal b7_g   : color;
+    signal b7_b   : color;
+    signal b7_ref : reflection;
+
+    -- block_8 outputs
+    signal b8_r   : color;
+    signal b8_g   : color;
+    signal b8_b   : color;
+    signal b8_ref : reflection;
+
+    -- block_9 outputs
+    signal b9_r   : color;
+    signal b9_g   : color;
+    signal b9_b   : color;
+    signal b9_ref : reflection;
+
 begin
 
     --
     -- Concurrent signal assignments
     --
 
-    VGA_R  <= l1_r   or l2_r   or l3_r   or l4_r   or l5_r   or l6_r   or b_r;
-    VGA_G  <= l1_g   or l2_g   or l3_g   or l4_g   or l5_g   or l6_g   or b_g;
-    VGA_B  <= l1_b   or l2_b   or l3_b   or l4_b   or l5_b   or l6_b   or b_b;
-    ref    <= l1_ref or l2_ref or l3_ref or l4_ref or l5_ref or l6_ref;
+    VGA_R  <= l1_r   or l2_r   or l3_r   or l4_r   or l5_r   or l6_r   or b_r    ;--or b1_r   or b2_r   or b3_r   or b4_r   or b5_r   or b6_r   or b7_r   or b8_r   or b9_r;
+    VGA_G  <= l1_g   or l2_g   or l3_g   or l4_g   or l5_g   or l6_g   or b_g    ;--or b1_g   or b2_g   or b3_g   or b4_g   or b5_g   or b6_g   or b7_g   or b8_g   or b9_g;
+    VGA_B  <= l1_b   or l2_b   or l3_b   or l4_b   or l5_b   or l6_b   or b_b    ;--or b1_b   or b2_b   or b3_b   or b4_b   or b5_b   or b6_b   or b7_b   or b8_b   or b9_b;
+    ref    <= l1_ref or l2_ref or l3_ref or l4_ref or l5_ref or l6_ref or b1_ref or b2_ref or b3_ref or b4_ref or b5_ref or b6_ref or b7_ref or b8_ref or b9_ref;
     vga_en <= h_en and v_en;
 
     --
@@ -162,10 +216,10 @@ begin
         -- Outputs:  b_r, b_g, b_b, ball_pos, g1, g2
         -- Internal: new_dir, new_pos, ball_dir, cnt
     ball : process (pixel_num) is
-        variable new_dir : direction := E;
+        variable new_dir : direction := NO_DIR;
         variable new_pos : position  := (x => 320, y => 100);
     begin
-        if KEY(0) = '1' theng
+        if KEY(0) = '1' then
             if vga_en = '1' then
                 if (line_num = 0) and (pixel_num = 0) then
 
@@ -334,6 +388,9 @@ begin
                         when others => new_pos := new_pos;
                     end case;
                 
+                else
+                    new_dir := new_dir;
+                    new_pos := new_pos;
                 end if;
 
                 -- Painting
@@ -369,7 +426,7 @@ begin
         else
             new_pos.x := 320;
             new_pos.y := 100;
-            new_dir   := SSE;
+            new_dir   := NE;
             ball_pos  <= new_pos;
             ball_dir  <= new_dir;
             b_r       <= b"0000";
@@ -772,7 +829,7 @@ begin
 
     end process;
 
-    -- Top left block, combinational logic
+    -- Middle block, combinational logic
     block_5 : process (line_num, pixel_num, ball_pos) is
     begin
 
@@ -801,7 +858,7 @@ begin
                 b5_ref <= NO_REF;
             end if;
 
-        elsif (line_num > 209)  and (line_num < 230)  and
+        elsif (line_num > 209)  and (line_num < 230)  then
 
             if (pixel_num > 301) and (pixel_num < 310) then
                 b5_ref <= N_S;
@@ -858,7 +915,7 @@ begin
                 b6_ref <= NO_REF;
             end if;
 
-        elsif (line_num > 269)  and (line_num < 290)  and
+        elsif (line_num > 269)  and (line_num < 290)  then
 
             if (pixel_num > 121) and (pixel_num < 130) then
                 b6_ref <= N_S;
@@ -915,7 +972,7 @@ begin
                 b7_ref <= NO_REF;
             end if;
 
-        elsif (line_num > 269)  and (line_num < 290)  and
+        elsif (line_num > 269)  and (line_num < 290)  then
 
             if (pixel_num > 241) and (pixel_num < 250) then
                 b7_ref <= N_S;
@@ -972,7 +1029,7 @@ begin
                 b8_ref <= NO_REF;
             end if;
 
-        elsif (line_num > 269)  and (line_num < 290)  and
+        elsif (line_num > 269)  and (line_num < 290)  then
 
             if (pixel_num > 361) and (pixel_num < 370) then
                 b8_ref <= N_S;
@@ -1029,7 +1086,7 @@ begin
                 b9_ref <= NO_REF;
             end if;
 
-        elsif (line_num > 269)  and (line_num < 290)  and
+        elsif (line_num > 269)  and (line_num < 290)  then
 
             if (pixel_num > 481) and (pixel_num < 490) then
                 b9_ref <= N_S;
