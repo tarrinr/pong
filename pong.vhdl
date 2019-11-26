@@ -54,13 +54,14 @@ architecture RTL of PONG is
     subtype color              is std_logic_vector(3 downto 0);
     subtype reflection         is std_logic_vector(2 downto 0);
     subtype score              is integer range 0 to 5;
+    subtype adc_value          is unsigned(11 downto 0);
 
 
     --
     -- Constants
     --
 
-    constant INIT_POS : position   := (x => 230, y => 90);
+    constant INIT_POS : position   := (x => 320, y => 105);
     constant NO_REF   : reflection := "000";
     constant N_S      : reflection := "001";
     constant NNE_SSW  : reflection := "010";
@@ -96,8 +97,8 @@ architecture RTL of PONG is
     signal v_en      : std_logic;
 
     -- Ball
-    signal ball_pos  : position   := INIT_POS;
-    signal ball_dir  : direction  := NE;
+    signal ball_pos  : position;
+    signal ball_dir  : direction;
     signal ref       : reflection;
     signal b_r       : color;
     signal b_g       : color;
@@ -108,6 +109,30 @@ architecture RTL of PONG is
     -- States
     signal vga_hor_state : vga_hor_state_type;
     signal vga_ver_state : vga_ver_state_type;
+
+    --paddle_1 outputs
+    signal p1_r     : color;
+    signal p1_g     : color;
+    signal p1_b     : color;
+    signal p1_ref   : reflection;
+    signal p1_value : adc_value;
+
+    --paddle_2 outputs
+    signal p2_r     : color;
+    signal p2_g     : color;
+    signal p2_b     : color;
+    signal p2_ref   : reflection;
+    signal p2_value : adc_value;
+
+    -- score_1 outputs
+    signal g1_r : color;
+    signal g1_g : color;
+    signal g1_b : color;
+
+    -- score_2 outputs
+    signal g2_r : color;
+    signal g2_g : color;
+    signal g2_b : color;
 
     -- line_1 outputs
     signal l1_r   : color;
@@ -205,10 +230,10 @@ begin
     -- Concurrent signal assignments
     --
 
-    VGA_R  <= l1_r   or l2_r   or l3_r   or l4_r   or l5_r   or l6_r   or b_r    or b1_r   or b2_r   or b3_r   or b4_r   or b5_r   or b6_r   or b7_r   or b8_r   or b9_r;
-    VGA_G  <= l1_g   or l2_g   or l3_g   or l4_g   or l5_g   or l6_g   or b_g    or b1_g   or b2_g   or b3_g   or b4_g   or b5_g   or b6_g   or b7_g   or b8_g   or b9_g;
-    VGA_B  <= l1_b   or l2_b   or l3_b   or l4_b   or l5_b   or l6_b   or b_b    or b1_b   or b2_b   or b3_b   or b4_b   or b5_b   or b6_b   or b7_b   or b8_b   or b9_b;
-    ref    <= l1_ref or l2_ref or l3_ref or l4_ref or l5_ref or l6_ref or b1_ref or b2_ref or b3_ref or b4_ref or b5_ref or b6_ref or b7_ref or b8_ref or b9_ref;
+    VGA_R  <= l1_r   or l2_r   or l3_r   or l4_r   or l5_r   or l6_r   or b_r    or p1_r   or p2_r   or s1_r   or s2_r   or b1_r   or b2_r   or b3_r   or b4_r   or b5_r   or b6_r   or b7_r   or b8_r   or b9_r;
+    VGA_G  <= l1_g   or l2_g   or l3_g   or l4_g   or l5_g   or l6_g   or b_g    or p1_g   or p2_g   or s1_g   or s2_g   or b1_g   or b2_g   or b3_g   or b4_g   or b5_g   or b6_g   or b7_g   or b8_g   or b9_g;
+    VGA_B  <= l1_b   or l2_b   or l3_b   or l4_b   or l5_b   or l6_b   or b_b    or p1_b   or p2_b   or s1_b   or s2_b   or b1_b   or b2_b   or b3_b   or b4_b   or b5_b   or b6_b   or b7_b   or b8_b   or b9_b;
+    ref    <= l1_ref or l2_ref or l3_ref or l4_ref or l5_ref or l6_ref or p1_ref or p2_ref or b1_ref or b2_ref or b3_ref or b4_ref or b5_ref or b6_ref or b7_ref or b8_ref or b9_ref;
     vga_en <= h_en and v_en;
 
     --
@@ -220,160 +245,179 @@ begin
         -- Outputs:  b_r, b_g, b_b, ball_pos, g1, g2
         -- Internal: ball_dir
     ball : process (clk) is
-        variable new_dir : direction;
-        variable new_pos : position;
-        variable new_g1  : score;
-        variable new_g2  : score;
+        variable start_dir : direction;
+        variable new_dir   : direction;
+        variable new_pos   : position;
+        variable new_g1    : score;
+        variable new_g2    : score;
+        variable bounced   : boolean;
     begin
         if rising_edge(clk) then
             if KEY(0) = '1' then
                 if (line_num = 479) and (pixel_num = 639) then
 
+                    -- Check for bounce
+                    if ref = NO_REF then
+                        bounce := 0;
+                        new_dir := new_dir;
+
                     -- New direction
-                    case ball_dir is
-                        when NNE    =>
-                            case ref is
-                                when N_S     => new_dir := NNW;
-                                when NNE_SSW => new_dir := NW;----
-                                when NE_SW   => new_dir := ENE;
-                                when E_W     => new_dir := SSE;
-                                when NW_SE   => new_dir := WSW;
-                                when NNW_SSE => new_dir := WNW;
-                                when others  => new_dir := NNE;
-                            end case;
-                        when NE     =>
-                            case ref is
-                                when N_S     => new_dir := NW;
-                                when NNE_SSW => new_dir := NNW;----
-                                when NE_SW   => new_dir := NE;--
-                                when E_W     => new_dir := SE;
-                                when NW_SE   => new_dir := SW;
-                                when NNW_SSE => new_dir := W;
-                                when others  => new_dir := NE;
-                            end case;
-                        when ENE    =>
-                            case ref is
-                                when N_S     => new_dir := WNW;
-                                when NNE_SSW => new_dir := NNW;
-                                when NE_SW   => new_dir := NNE;
-                                when E_W     => new_dir := ESE;
-                                when NW_SE   => new_dir := SSW;
-                                when NNW_SSE => new_dir := WSW;
-                                when others  => new_dir := ENE;
-                            end case;
-                        when E      =>
-                            case ref is
-                                when N_S     => new_dir := W;
-                                when NNE_SSW => new_dir := NW;
-                                when NE_SW   => new_dir := NNE;----
-                                when E_W     => new_dir := E;--
-                                when NW_SE   => new_dir := SSE;----
-                                when NNW_SSE => new_dir := SW;
-                                when others  => new_dir := E;
-                            end case;
-                        when ESE    =>
-                            case ref is
-                                when N_S     => new_dir := WSW;
-                                when NNE_SSW => new_dir := WNW;
-                                when NE_SW   => new_dir := NNW;
-                                when E_W     => new_dir := ENE;
-                                when NW_SE   => new_dir := SSE;
-                                when NNW_SSE => new_dir := SSW;
-                                when others  => new_dir := ESE;
-                            end case;
-                        when SE     =>
-                            case ref is
-                                when N_S     => new_dir := SW;
-                                when NNE_SSW => new_dir := W;
-                                when NE_SW   => new_dir := NW;
-                                when E_W     => new_dir := NE;
-                                when NW_SE   => new_dir := SE;--
-                                when NNW_SSE => new_dir := SSW;----
-                                when others  => new_dir := SE;
-                            end case;
-                        when SSE    =>
-                            case ref is
-                                when N_S     => new_dir := SSW;
-                                when NNE_SSW => new_dir := WSW;
-                                when NE_SW   => new_dir := WNW;
-                                when E_W     => new_dir := NNE;
-                                when NW_SE   => new_dir := ESE;
-                                when NNW_SSE => new_dir := SW;----
-                                when others  => new_dir := SSE;
-                            end case;
-                        when SSW    =>
-                            case ref is
-                                when N_S     => new_dir := SSE;
-                                when NNE_SSW => new_dir := SE;----
-                                when NE_SW   => new_dir := WSW;
-                                when E_W     => new_dir := NNW;
-                                when NW_SE   => new_dir := ENE;
-                                when NNW_SSE => new_dir := ESE;
-                                when others  => new_dir := SSW;
-                            end case;
-                        when SW     =>
-                            case ref is
-                                when N_S     => new_dir := SE;
-                                when NNE_SSW => new_dir := SSE;----
-                                when NE_SW   => new_dir := SW;--
-                                when E_W     => new_dir := NW;
-                                when NW_SE   => new_dir := NE;
-                                when NNW_SSE => new_dir := E;
-                                when others  => new_dir := SW;
-                            end case;
-                        when WSW    =>
-                            case ref is
-                                when N_S     => new_dir := ESE;
-                                when NNE_SSW => new_dir := SSE;
-                                when NE_SW   => new_dir := SSW;
-                                when E_W     => new_dir := WNW;
-                                when NW_SE   => new_dir := NNE;
-                                when NNW_SSE => new_dir := ENE;
-                                when others  => new_dir := WSW;
-                            end case;
-                        when W      =>
-                            case ref is
-                                when N_S     => new_dir := E;
-                                when NNE_SSW => new_dir := SE;
-                                when NE_SW   => new_dir := SSW;----
-                                when E_W     => new_dir := W;--
-                                when NW_SE   => new_dir := NNW;----
-                                when NNW_SSE => new_dir := NE;
-                                when others  => new_dir := W;
-                            end case;
-                        when WNW    =>
-                            case ref is
-                                when N_S     => new_dir := ENE;
-                                when NNE_SSW => new_dir := ESE;
-                                when NE_SW   => new_dir := SSE;
-                                when E_W     => new_dir := WSW;
-                                when NW_SE   => new_dir := NNW;
-                                when NNW_SSE => new_dir := NNE;
-                                when others  => new_dir := WNW;
-                            end case;
-                        when NW     =>
-                            case ref is
-                                when N_S     => new_dir := NE;
-                                when NNE_SSW => new_dir := E;
-                                when NE_SW   => new_dir := SE;
-                                when E_W     => new_dir := SW;
-                                when NW_SE   => new_dir := NW;--
-                                when NNW_SSE => new_dir := NNE;----
-                                when others  => new_dir := NW;
-                            end case;
-                        when NNW    =>
-                            case ref is
-                                when N_S     => new_dir := NNE;
-                                when NNE_SSW => new_dir := ENE;
-                                when NE_SW   => new_dir := ESE;
-                                when E_W     => new_dir := SSW;
-                                when NW_SE   => new_dir := WNW;
-                                when NNW_SSE => new_dir := NE;----
-                                when others  => new_dir := NNW;
-                            end case;
-                        when others =>
-                            new_dir := new_dir;
-                    end case;
+                    elsif bounced = 0 then
+                        case ball_dir is
+                            when NNE    =>
+                                case ref is
+                                    when N_S     => new_dir := NNW;
+                                    when NNE_SSW => new_dir := NW;----
+                                    when NE_SW   => new_dir := ENE;
+                                    when E_W     => new_dir := SSE;
+                                    when NW_SE   => new_dir := WSW;
+                                    when NNW_SSE => new_dir := WNW;
+                                    when others  => new_dir := NNE;
+                                end case;
+                            when NE     =>
+                                case ref is
+                                    when N_S     => new_dir := NW;
+                                    when NNE_SSW => new_dir := NNW;----
+                                    when NE_SW   => new_dir := NE;--
+                                    when E_W     => new_dir := SE;
+                                    when NW_SE   => new_dir := SW;
+                                    when NNW_SSE => new_dir := W;
+                                    when others  => new_dir := NE;
+                                end case;
+                            when ENE    =>
+                                case ref is
+                                    when N_S     => new_dir := WNW;
+                                    when NNE_SSW => new_dir := NNW;
+                                    when NE_SW   => new_dir := NNE;
+                                    when E_W     => new_dir := ESE;
+                                    when NW_SE   => new_dir := SSW;
+                                    when NNW_SSE => new_dir := WSW;
+                                    when others  => new_dir := ENE;
+                                end case;
+                            when E      =>
+                                case ref is
+                                    when N_S     => new_dir := W;
+                                    when NNE_SSW => new_dir := NW;
+                                    when NE_SW   => new_dir := NNE;----
+                                    when E_W     => new_dir := E;--
+                                    when NW_SE   => new_dir := SSE;----
+                                    when NNW_SSE => new_dir := SW;
+                                    when others  => new_dir := E;
+                                end case;
+                            when ESE    =>
+                                case ref is
+                                    when N_S     => new_dir := WSW;
+                                    when NNE_SSW => new_dir := WNW;
+                                    when NE_SW   => new_dir := NNW;
+                                    when E_W     => new_dir := ENE;
+                                    when NW_SE   => new_dir := SSE;
+                                    when NNW_SSE => new_dir := SSW;
+                                    when others  => new_dir := ESE;
+                                end case;
+                            when SE     =>
+                                case ref is
+                                    when N_S     => new_dir := SW;
+                                    when NNE_SSW => new_dir := W;
+                                    when NE_SW   => new_dir := NW;
+                                    when E_W     => new_dir := NE;
+                                    when NW_SE   => new_dir := SE;--
+                                    when NNW_SSE => new_dir := SSW;----
+                                    when others  => new_dir := SE;
+                                end case;
+                            when SSE    =>
+                                case ref is
+                                    when N_S     => new_dir := SSW;
+                                    when NNE_SSW => new_dir := WSW;
+                                    when NE_SW   => new_dir := WNW;
+                                    when E_W     => new_dir := NNE;
+                                    when NW_SE   => new_dir := ESE;
+                                    when NNW_SSE => new_dir := SW;----
+                                    when others  => new_dir := SSE;
+                                end case;
+                            when SSW    =>
+                                case ref is
+                                    when N_S     => new_dir := SSE;
+                                    when NNE_SSW => new_dir := SE;----
+                                    when NE_SW   => new_dir := WSW;
+                                    when E_W     => new_dir := NNW;
+                                    when NW_SE   => new_dir := ENE;
+                                    when NNW_SSE => new_dir := ESE;
+                                    when others  => new_dir := SSW;
+                                end case;
+                            when SW     =>
+                                case ref is
+                                    when N_S     => new_dir := SE;
+                                    when NNE_SSW => new_dir := SSE;----
+                                    when NE_SW   => new_dir := SW;--
+                                    when E_W     => new_dir := NW;
+                                    when NW_SE   => new_dir := NE;
+                                    when NNW_SSE => new_dir := E;
+                                    when others  => new_dir := SW;
+                                end case;
+                            when WSW    =>
+                                case ref is
+                                    when N_S     => new_dir := ESE;
+                                    when NNE_SSW => new_dir := SSE;
+                                    when NE_SW   => new_dir := SSW;
+                                    when E_W     => new_dir := WNW;
+                                    when NW_SE   => new_dir := NNE;
+                                    when NNW_SSE => new_dir := ENE;
+                                    when others  => new_dir := WSW;
+                                end case;
+                            when W      =>
+                                case ref is
+                                    when N_S     => new_dir := E;
+                                    when NNE_SSW => new_dir := SE;
+                                    when NE_SW   => new_dir := SSW;----
+                                    when E_W     => new_dir := W;--
+                                    when NW_SE   => new_dir := NNW;----
+                                    when NNW_SSE => new_dir := NE;
+                                    when others  => new_dir := W;
+                                end case;
+                            when WNW    =>
+                                case ref is
+                                    when N_S     => new_dir := ENE;
+                                    when NNE_SSW => new_dir := ESE;
+                                    when NE_SW   => new_dir := SSE;
+                                    when E_W     => new_dir := WSW;
+                                    when NW_SE   => new_dir := NNW;
+                                    when NNW_SSE => new_dir := NNE;
+                                    when others  => new_dir := WNW;
+                                end case;
+                            when NW     =>
+                                case ref is
+                                    when N_S     => new_dir := NE;
+                                    when NNE_SSW => new_dir := E;
+                                    when NE_SW   => new_dir := SE;
+                                    when E_W     => new_dir := SW;
+                                    when NW_SE   => new_dir := NW;--
+                                    when NNW_SSE => new_dir := NNE;----
+                                    when others  => new_dir := NW;
+                                end case;
+                            when NNW    =>
+                                case ref is
+                                    when N_S     => new_dir := NNE;
+                                    when NNE_SSW => new_dir := ENE;
+                                    when NE_SW   => new_dir := ESE;
+                                    when E_W     => new_dir := SSW;
+                                    when NW_SE   => new_dir := WNW;
+                                    when NNW_SSE => new_dir := NE;----
+                                    when others  => new_dir := NNW;
+                                end case;
+                            when NO_DIR =>
+                                if (KEY(1) = '0') and (new_g1 < 5) and (new_g2 < 5) then
+                                    new_dir := start_dir;
+                                else
+                                    new_dir := new_dir;
+                                end if;
+                            when others =>
+                                new_dir := new_dir;
+                        end case;
+                        bounced := 1;
+                    else
+                        bounced := 1;
+                        new_dir := new_dir;
+                    end if;
 
                     -- New position
                     case new_dir is
@@ -395,24 +439,32 @@ begin
                     end case;
 
                     -- Check for goal
-                    if new_pos.x < 20 then
-                        new_g1  := new_g1 + 1;
-                        new_g2  := new_g2;
-                        new_pos := INIT_POS;
-                    elsif new_pos.x > 619 then
-                        new_g1  := new_g1;
-                        new_g2  := new_g2 + 1;
-                        new_pos := INIT_POS;
+                    if new_pos.x < 28 then
+                        start_dir := W;
+                        new_g1    := new_g1;
+                        new_g2    := new_g2 + 1;
+                        new_pos   := INIT_POS;
+                        new_dir   := NO_DIR;
+                    elsif new_pos.x > 611 then
+                        start_dir := E;
+                        new_g1    := new_g1 + 1;
+                        new_g2    := new_g2;
+                        new_pos   := INIT_POS;
+                        new_dir   := NO_DIR;
                     else
-                        new_g1 := new_g1;
-                        new_g2 := new_g2;
+                        start_dir := start_dir;
+                        new_g1    := new_g1;
+                        new_g2    := new_g2;
+                        new_pos   := new_pos;
+                        new_dir   := new_dir;
                     end if;
                 
                 else
-                    new_dir := new_dir;
-                    new_pos := new_pos;
-                    new_g1  := new_g1;
-                    new_g2  := new_g2;
+                    start_dir := start_dir;
+                    new_dir   := new_dir;
+                    new_pos   := new_pos;
+                    new_g1    := new_g1;
+                    new_g2    := new_g2;
                 end if;
                 
                 ball_pos <= new_pos;
@@ -421,14 +473,15 @@ begin
                 g2       <= new_g2;
 
             else
-                new_dir := NNE;
-                new_pos := INIT_POS;
-                new_g1  := 0;
-                new_g2  := 0;
-                ball_pos   <= INIT_POS;
-                ball_dir   <= NNE;
-                g1         <= 0;
-                g2         <= 0;
+                start_dir := W;
+                new_dir   := NO_DIR;
+                new_pos   := INIT_POS;
+                new_g1    := 0;
+                new_g2    := 0;
+                ball_pos  <= INIT_POS;
+                ball_dir  <= NO_DIR;
+                g1        <= 0;
+                g2        <= 0;
             end if;
         end if;
     end process;
@@ -451,6 +504,161 @@ begin
             b_b <= b"0000";
         end if;
     end process;
+
+    -- Paddle 1, combinational logic
+    paddle_1 : process (line_num, pixel_num, ball_pos, p1_value) is
+        variable pad_pos : integer range 88 to 351;
+    begin
+
+        -- Calculate paddle position
+        pad_pos := (p1_value / x"FFF") * 263 + 88;
+
+        -- Painting
+        if (pixel_num > 39) and (pixel_num < 45) and
+           (line_num > (pad_pos - 20)) and (line_num < (pad_pos + 20)) then
+            p1_r <= b"1111";
+            p1_g <= b"1010";
+            p1_b <= b"0000";
+        else
+            p1_r <= b"0000";
+            p1_g <= b"0000";
+            p1_b <= b"0000";
+        end if;
+
+        -- Ball reflections
+        if (ball_pos.x > 44) and (ball_pos.x < 53) then
+            if (ball_pos.y > (pad_pos - 5)) and (ball_pos.y < (pad_pos + 5)) then
+                p1_ref <= N_S;
+            elsif (ball_pos.y > (pad_pos - 15)) and (ball_pos.y < pad_pos) then
+                p1_ref <= NNW_SSE;
+            elsif (ball_pos.y < (pad_pos + 15)) and (ball_pos.y > pad_pos) then
+                p1_ref <= NNE_SSW;
+            elsif (ball_pos.y > (pad_pos - 20)) and (ball_pos.y < pad_pos) then
+                p1_ref <= NW_SE;
+            elsif (ball_pos.y < (pad_pos + 20)) and (ball_pos.y > pad_pos) then
+                p1_ref <= NE_SW;
+            else
+                p1_ref <= NO_REF;
+            end if;
+        else
+            p1_ref <= NO_REF;
+        end if;
+
+    end process;
+
+    -- Paddle 2
+
+    -- Score 1, combinational logic
+    score_1 : process (line_num, pixel_num, g1) is
+    begin
+        case g1 is
+            when 0      =>
+                if ((line_num > 409)  and (line_num < 440)   and -- left vertical
+                   (pixel_num > 129)  and (pixel_num < 134)) or
+                   ((line_num > 409)  and (line_num < 440)   and -- right vertical
+                   (pixel_num > 145)  and (pixel_num < 150)) or
+                   ((line_num > 409)  and (line_num < 414)   and -- top horizontal
+                   (pixel_num > 133)  and (pixel_num < 146)) or
+                   ((line_num > 435)  and (line_num < 440)   and -- bottom horizontal
+                   (pixel_num > 133)  and (pixel_num < 146)) then
+                    g1_r <= b"1111";
+                    g1_g <= b"1111";
+                    g1_b <= b"1111";
+                else
+                    g1_r <= b"0000";
+                    g1_g <= b"0000";
+                    g1_b <= b"0000";
+                end if;
+            when 1      =>
+                if (line_num > 409)  and (line_num < 440)  and --right vertical
+                   (pixel_num > 145) and (pixel_num < 150) then
+                    g1_r <= b"1111";
+                    g1_g <= b"1111";
+                    g1_b <= b"1111";
+                else
+                    g1_r <= b"0000";
+                    g1_g <= b"0000";
+                    g1_b <= b"0000";
+                end if;
+            when 2      =>
+                if ((line_num > 409)  and (line_num < 414)   and -- top horizontal
+                   (pixel_num > 129)  and (pixel_num < 146)) or
+                   ((line_num > 409)  and (line_num < 422)   and -- right vertical
+                   (pixel_num > 145)  and (pixel_num < 150)) or
+                   ((line_num > 422)  and (line_num < 427)   and -- middle horizontal
+                   (pixel_num > 133)  and (pixel_num < 146)) or
+                   ((line_num > 426)  and (line_num < 440)   and -- left vertical
+                   (pixel_num > 129)  and (pixel_num < 134)) or
+                   ((line_num > 435)  and (line_num < 440)   and -- bottom horizontal
+                   (pixel_num > 133)  and (pixel_num < 150)) then
+                    g1_r <= b"1111";
+                    g1_g <= b"1111";
+                    g1_b <= b"1111";
+                else
+                    g1_r <= b"0000";
+                    g1_g <= b"0000";
+                    g1_b <= b"0000";
+                end if;
+            when 3      =>
+                if ((line_num > 409)  and (line_num < 440)   and -- right vertical
+                   (pixel_num > 145)  and (pixel_num < 150)) or
+                   ((line_num > 409)  and (line_num < 414)   and -- top horizontal
+                   (pixel_num > 129)  and (pixel_num < 146)) or
+                   ((line_num > 422)  and (line_num < 427)   and -- middle horizontal
+                   (pixel_num > 133)  and (pixel_num < 146)) or
+                   ((line_num > 435)  and (line_num < 440)   and -- bottom horizontal
+                   (pixel_num > 129)  and (pixel_num < 146)) then
+                    g1_r <= b"1111";
+                    g1_g <= b"1111";
+                    g1_b <= b"1111";
+                else
+                    g1_r <= b"0000";
+                    g1_g <= b"0000";
+                    g1_b <= b"0000";
+                end if;
+            when 4      =>
+                if ((line_num > 409)  and (line_num < 427)   and -- left vertical
+                   (pixel_num > 129)  and (pixel_num < 134)) or
+                   ((line_num > 409)  and (line_num < 440)   and -- right vertical
+                   (pixel_num > 145)  and (pixel_num < 150)) or
+                   ((line_num > 422)  and (line_num < 427)   and -- middle horizontal
+                   (pixel_num > 133)  and (pixel_num < 146)) then
+                    g1_r <= b"1111";
+                    g1_g <= b"1111";
+                    g1_b <= b"1111";
+                else
+                    g1_r <= b"0000";
+                    g1_g <= b"0000";
+                    g1_b <= b"0000";
+                end if;
+            when 5      =>
+                if ((line_num > 409)  and (line_num < 414)   and -- top horizontal
+                   (pixel_num > 133)  and (pixel_num < 150)) or
+                   ((line_num > 409)  and (line_num < 422)   and -- left vertical
+                   (pixel_num > 129)  and (pixel_num < 134)) or
+                   ((line_num > 422)  and (line_num < 427)   and -- middle horizontal
+                   (pixel_num > 133)  and (pixel_num < 146)) or
+                   ((line_num > 422)  and (line_num < 440)   and -- right vertical
+                   (pixel_num > 145)  and (pixel_num < 150)) or
+                   ((line_num > 435)  and (line_num < 440)   and -- bottom horizontal
+                   (pixel_num > 129)  and (pixel_num < 146)) then
+                    g1_r <= b"1111";
+                    g1_g <= b"1111";
+                    g1_b <= b"1111";
+                else
+                    g1_r <= b"0000";
+                    g1_g <= b"0000";
+                    g1_b <= b"0000";
+                end if;
+            when others =>
+                g1_r <= b"0000";
+                g1_g <= b"0000";
+                g1_b <= b"0000";
+        end case;
+    end process;
+
+    -- Score 2, combinational logic
+    
 
     -- Top boundary line, combinational logic
     line_1 : process (line_num, pixel_num, ball_pos) is
