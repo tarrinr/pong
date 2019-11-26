@@ -60,7 +60,7 @@ architecture RTL of PONG is
     -- Constants
     --
 
-    constant INIT_POS : position   := (x => 100, y => 100);
+    constant INIT_POS : position   := (x => 230, y => 90);
     constant NO_REF   : reflection := "000";
     constant N_S      : reflection := "001";
     constant NNE_SSW  : reflection := "010";
@@ -222,8 +222,8 @@ begin
     ball : process (clk) is
         variable new_dir : direction;
         variable new_pos : position;
-        variable g1      : score;
-        variable g2      : score;
+        variable new_g1  : score;
+        variable new_g2  : score;
     begin
         if rising_edge(clk) then
             if KEY(0) = '1' then
@@ -396,36 +396,37 @@ begin
 
                     -- Check for goal
                     if new_pos.x < 20 then
-                        g1 := g1 + 1;
-                        g2 := g2;
-                        ball_pos := INIT_POS;
+                        new_g1  := new_g1 + 1;
+                        new_g2  := new_g2;
+                        new_pos := INIT_POS;
                     elsif new_pos.x > 619 then
-                        g1 := g1;
-                        g2 := g2 + 1;
-                        ball_pos := INIT_POS;
+                        new_g1  := new_g1;
+                        new_g2  := new_g2 + 1;
+                        new_pos := INIT_POS;
                     else
-                        g1 := g1;
-                        g2 := g2;
+                        new_g1 := new_g1;
+                        new_g2 := new_g2;
                     end if;
                 
                 else
                     new_dir := new_dir;
                     new_pos := new_pos;
-                    g1      := g1;
-                    g2      := g2;
+                    new_g1  := new_g1;
+                    new_g2  := new_g2;
                 end if;
                 
                 ball_pos <= new_pos;
                 ball_dir <= new_dir;
-                g1       <= g1;
-                g2       <= g2;
+                g1       <= new_g1;
+                g2       <= new_g2;
 
             else
+                new_dir := NNE;
+                new_pos := INIT_POS;
+                new_g1  := 0;
+                new_g2  := 0;
                 ball_pos   <= INIT_POS;
-                ball_dir   <= NE;
-                b_r        <= b"0000";
-                b_g        <= b"0000";
-                b_b        <= b"0000";
+                ball_dir   <= NNE;
                 g1         <= 0;
                 g2         <= 0;
             end if;
@@ -634,35 +635,35 @@ begin
         end if;
 
         -- Ball reflections
-        if (line_num > 141)  and (line_num < 150)  then
+        if (ball_pos.y > 141)  and (ball_pos.y < 150)  then
 
-            if (pixel_num > 121) and (pixel_num < 130) then
+            if (ball_pos.x > 121) and (ball_pos.x < 130) then
                 b1_ref <= NE_SW;
-            elsif (pixel_num > 129) and (pixel_num < 150) then
+            elsif (ball_pos.x > 129) and (ball_pos.x < 150) then
                 b1_ref <= E_W;
-            elsif (pixel_num > 149) and (pixel_num < 158) then
+            elsif (ball_pos.x > 149) and (ball_pos.x < 158) then
                 b1_ref <= NW_SE;
             else
                 b1_ref <= NO_REF;
             end if;
 
-        elsif (line_num > 149)  and (line_num < 170)  then
+        elsif (ball_pos.y > 149)  and (ball_pos.y < 170)  then
 
-            if (pixel_num > 121) and (pixel_num < 130) then
+            if (ball_pos.x > 121) and (ball_pos.x < 130) then
                 b1_ref <= N_S;
-            elsif (pixel_num > 149) and (pixel_num < 158) then
+            elsif (ball_pos.x > 149) and (ball_pos.x < 158) then
                 b1_ref <= N_S;
             else
                 b1_ref <= NO_REF;
             end if;
 
-        elsif (line_num > 169)  and (line_num < 178)  then
+        elsif (ball_pos.y > 169)  and (ball_pos.y < 178)  then
 
-            if (pixel_num > 121) and (pixel_num < 130) then
+            if (ball_pos.x > 121) and (ball_pos.x < 130) then
                 b1_ref <= NW_SE;
-            elsif (pixel_num > 129) and (pixel_num < 150) then
+            elsif (ball_pos.x > 129) and (ball_pos.x < 150) then
                 b1_ref <= E_W;
-            elsif (pixel_num > 149) and (pixel_num < 158) then
+            elsif (ball_pos.x > 149) and (ball_pos.x < 158) then
                 b1_ref <= NE_SW;
             else
                 b1_ref <= NO_REF;
@@ -691,35 +692,35 @@ begin
         end if;
 
         -- Ball reflections
-        if (line_num > 141)  and (line_num < 150)  then
+        if (ball_pos.y > 141)  and (ball_pos.y < 150)  then
 
-            if (pixel_num > 241) and (pixel_num < 250) then
+            if (ball_pos.x > 241) and (ball_pos.x < 250) then
                 b2_ref <= NE_SW;
-            elsif (pixel_num > 249) and (pixel_num < 270) then
+            elsif (ball_pos.x > 249) and (ball_pos.x < 270) then
                 b2_ref <= E_W;
-            elsif (pixel_num > 269) and (pixel_num < 278) then
+            elsif (ball_pos.x > 269) and (ball_pos.x < 278) then
                 b2_ref <= NW_SE;
             else
                 b2_ref <= NO_REF;
             end if;
 
-        elsif (line_num > 149)  and (line_num < 170)  then
+        elsif (ball_pos.y > 149)  and (ball_pos.y < 170)  then
 
-            if (pixel_num > 241) and (pixel_num < 250) then
+            if (ball_pos.x > 241) and (ball_pos.x < 250) then
                 b2_ref <= N_S;
-            elsif (pixel_num > 269) and (pixel_num < 278) then
+            elsif (ball_pos.x > 269) and (ball_pos.x < 278) then
                 b2_ref <= N_S;
             else
                 b2_ref <= NO_REF;
             end if;
 
-        elsif (line_num > 169)  and (line_num < 178)  then
+        elsif (ball_pos.y > 169)  and (ball_pos.y < 178)  then
 
-            if (pixel_num > 241) and (pixel_num < 250) then
+            if (ball_pos.x > 241) and (ball_pos.x < 250) then
                 b2_ref <= NW_SE;
-            elsif (pixel_num > 249) and (pixel_num < 270) then
+            elsif (ball_pos.x > 249) and (ball_pos.x < 270) then
                 b2_ref <= E_W;
-            elsif (pixel_num > 269) and (pixel_num < 278) then
+            elsif (ball_pos.x > 269) and (ball_pos.x < 278) then
                 b2_ref <= NE_SW;
             else
                 b2_ref <= NO_REF;
@@ -748,35 +749,35 @@ begin
         end if;
 
         -- Ball reflections
-        if (line_num > 141)  and (line_num < 150)  then
+        if (ball_pos.y > 141)  and (ball_pos.y < 150)  then
 
-            if (pixel_num > 361) and (pixel_num < 370) then
+            if (ball_pos.x > 361) and (ball_pos.x < 370) then
                 b3_ref <= NE_SW;
-            elsif (pixel_num > 369) and (pixel_num < 390) then
+            elsif (ball_pos.x > 369) and (ball_pos.x < 390) then
                 b3_ref <= E_W;
-            elsif (pixel_num > 389) and (pixel_num < 398) then
+            elsif (ball_pos.x > 389) and (ball_pos.x < 398) then
                 b3_ref <= NW_SE;
             else
                 b3_ref <= NO_REF;
             end if;
 
-        elsif (line_num > 149)  and (line_num < 170)  then
+        elsif (ball_pos.y > 149)  and (ball_pos.y < 170)  then
 
-            if (pixel_num > 361) and (pixel_num < 370) then
+            if (ball_pos.x > 361) and (ball_pos.x < 370) then
                 b3_ref <= N_S;
-            elsif (pixel_num > 389) and (pixel_num < 398) then
+            elsif (ball_pos.x > 389) and (ball_pos.x < 398) then
                 b3_ref <= N_S;
             else
                 b3_ref <= NO_REF;
             end if;
 
-        elsif (line_num > 169)  and (line_num < 178)  then
+        elsif (ball_pos.y > 169)  and (ball_pos.y < 178)  then
 
-            if (pixel_num > 361) and (pixel_num < 370) then
+            if (ball_pos.x > 361) and (ball_pos.x < 370) then
                 b3_ref <= NW_SE;
-            elsif (pixel_num > 369) and (pixel_num < 390) then
+            elsif (ball_pos.x > 369) and (ball_pos.x < 390) then
                 b3_ref <= E_W;
-            elsif (pixel_num > 389) and (pixel_num < 398) then
+            elsif (ball_pos.x > 389) and (ball_pos.x < 398) then
                 b3_ref <= NE_SW;
             else
                 b3_ref <= NO_REF;
@@ -805,35 +806,35 @@ begin
         end if;
 
         -- Ball reflections
-        if (line_num > 141)  and (line_num < 150)  then
+        if (ball_pos.y > 141)  and (ball_pos.y < 150)  then
 
-            if (pixel_num > 481) and (pixel_num < 490) then
+            if (ball_pos.x > 481) and (ball_pos.x < 490) then
                 b4_ref <= NE_SW;
-            elsif (pixel_num > 489) and (pixel_num < 510) then
+            elsif (ball_pos.x > 489) and (ball_pos.x < 510) then
                 b4_ref <= E_W;
-            elsif (pixel_num > 509) and (pixel_num < 518) then
+            elsif (ball_pos.x > 509) and (ball_pos.x < 518) then
                 b4_ref <= NW_SE;
             else
                 b4_ref <= NO_REF;
             end if;
 
-        elsif (line_num > 149)  and (line_num < 170)  then
+        elsif (ball_pos.y > 149)  and (ball_pos.y < 170)  then
 
-            if (pixel_num > 481) and (pixel_num < 490) then
+            if (ball_pos.x > 481) and (ball_pos.x < 490) then
                 b4_ref <= N_S;
-            elsif (pixel_num > 389) and (pixel_num < 398) then
+            elsif (ball_pos.x > 389) and (ball_pos.x < 398) then
                 b4_ref <= N_S;
             else
                 b4_ref <= NO_REF;
             end if;
 
-        elsif (line_num > 169)  and (line_num < 178)  then
+        elsif (ball_pos.y > 169)  and (ball_pos.y < 178)  then
 
-            if (pixel_num > 481) and (pixel_num < 490) then
+            if (ball_pos.x > 481) and (ball_pos.x < 490) then
                 b4_ref <= NW_SE;
-            elsif (pixel_num > 489) and (pixel_num < 510) then
+            elsif (ball_pos.x > 489) and (ball_pos.x < 510) then
                 b4_ref <= E_W;
-            elsif (pixel_num > 509) and (pixel_num < 518) then
+            elsif (ball_pos.x > 509) and (ball_pos.x < 518) then
                 b4_ref <= NE_SW;
             else
                 b4_ref <= NO_REF;
@@ -862,35 +863,35 @@ begin
         end if;
 
         -- Ball reflections
-        if (line_num > 141)  and (line_num < 150)  then
+        if (ball_pos.y > 201)  and (ball_pos.y < 210)  then
 
-            if (pixel_num > 301) and (pixel_num < 310) then
+            if (ball_pos.x > 301) and (ball_pos.x < 310) then
                 b5_ref <= NE_SW;
-            elsif (pixel_num > 309) and (pixel_num < 330) then
+            elsif (ball_pos.x > 309) and (ball_pos.x < 330) then
                 b5_ref <= E_W;
-            elsif (pixel_num > 329) and (pixel_num < 338) then
+            elsif (ball_pos.x > 329) and (ball_pos.x < 338) then
                 b5_ref <= NW_SE;
             else
                 b5_ref <= NO_REF;
             end if;
 
-        elsif (line_num > 209)  and (line_num < 230)  then
+        elsif (ball_pos.y > 209)  and (ball_pos.y < 230)  then
 
-            if (pixel_num > 301) and (pixel_num < 310) then
+            if (ball_pos.x > 301) and (ball_pos.x < 310) then
                 b5_ref <= N_S;
-            elsif (pixel_num > 329) and (pixel_num < 338) then
+            elsif (ball_pos.x > 329) and (ball_pos.x < 338) then
                 b5_ref <= N_S;
             else
                 b5_ref <= NO_REF;
             end if;
 
-        elsif (line_num > 169)  and (line_num < 178)  then
+        elsif (ball_pos.y > 229)  and (ball_pos.y < 238)  then
 
-            if (pixel_num > 301) and (pixel_num < 310) then
+            if (ball_pos.x > 301) and (ball_pos.x < 310) then
                 b5_ref <= NW_SE;
-            elsif (pixel_num > 309) and (pixel_num < 330) then
+            elsif (ball_pos.x > 309) and (ball_pos.x < 330) then
                 b5_ref <= E_W;
-            elsif (pixel_num > 329) and (pixel_num < 338) then
+            elsif (ball_pos.x > 329) and (ball_pos.x < 338) then
                 b5_ref <= NE_SW;
             else
                 b5_ref <= NO_REF;
@@ -919,35 +920,35 @@ begin
         end if;
 
         -- Ball reflections
-        if (line_num > 261)  and (line_num < 270)  then
+        if (ball_pos.y > 261)  and (ball_pos.y < 270)  then
 
-            if (pixel_num > 121) and (pixel_num < 130) then
+            if (ball_pos.x > 121) and (ball_pos.x < 130) then
                 b6_ref <= NE_SW;
-            elsif (pixel_num > 129) and (pixel_num < 150) then
+            elsif (ball_pos.x > 129) and (ball_pos.x < 150) then
                 b6_ref <= E_W;
-            elsif (pixel_num > 149) and (pixel_num < 158) then
+            elsif (ball_pos.x > 149) and (ball_pos.x < 158) then
                 b6_ref <= NW_SE;
             else
                 b6_ref <= NO_REF;
             end if;
 
-        elsif (line_num > 269)  and (line_num < 290)  then
+        elsif (ball_pos.y > 269)  and (ball_pos.y < 290)  then
 
-            if (pixel_num > 121) and (pixel_num < 130) then
+            if (ball_pos.x > 121) and (ball_pos.x < 130) then
                 b6_ref <= N_S;
-            elsif (pixel_num > 149) and (pixel_num < 158) then
+            elsif (ball_pos.x > 149) and (ball_pos.x < 158) then
                 b6_ref <= N_S;
             else
                 b6_ref <= NO_REF;
             end if;
 
-        elsif (line_num > 289)  and (line_num < 298)  then
+        elsif (ball_pos.y > 289)  and (ball_pos.y < 298)  then
 
-            if (pixel_num > 121) and (pixel_num < 130) then
+            if (ball_pos.x > 121) and (ball_pos.x < 130) then
                 b6_ref <= NW_SE;
-            elsif (pixel_num > 129) and (pixel_num < 150) then
+            elsif (ball_pos.x > 129) and (ball_pos.x < 150) then
                 b6_ref <= E_W;
-            elsif (pixel_num > 149) and (pixel_num < 158) then
+            elsif (ball_pos.x > 149) and (ball_pos.x < 158) then
                 b6_ref <= NE_SW;
             else
                 b6_ref <= NO_REF;
@@ -976,35 +977,35 @@ begin
         end if;
 
         -- Ball reflections
-        if (line_num > 261)  and (line_num < 270)  then
+        if (ball_pos.y > 261)  and (ball_pos.y < 270)  then
 
-            if (pixel_num > 241) and (pixel_num < 250) then
+            if (ball_pos.x > 241) and (ball_pos.x < 250) then
                 b7_ref <= NE_SW;
-            elsif (pixel_num > 249) and (pixel_num < 270) then
+            elsif (ball_pos.x > 249) and (ball_pos.x < 270) then
                 b7_ref <= E_W;
-            elsif (pixel_num > 269) and (pixel_num < 278) then
+            elsif (ball_pos.x > 269) and (ball_pos.x < 278) then
                 b7_ref <= NW_SE;
             else
                 b7_ref <= NO_REF;
             end if;
 
-        elsif (line_num > 269)  and (line_num < 290)  then
+        elsif (ball_pos.y > 269)  and (ball_pos.y < 290)  then
 
-            if (pixel_num > 241) and (pixel_num < 250) then
+            if (ball_pos.x > 241) and (ball_pos.x < 250) then
                 b7_ref <= N_S;
-            elsif (pixel_num > 269) and (pixel_num < 278) then
+            elsif (ball_pos.x > 269) and (ball_pos.x < 278) then
                 b7_ref <= N_S;
             else
                 b7_ref <= NO_REF;
             end if;
 
-        elsif (line_num > 289)  and (line_num < 298)  then
+        elsif (ball_pos.y > 289)  and (ball_pos.y < 298)  then
 
-            if (pixel_num > 241) and (pixel_num < 250) then
+            if (ball_pos.x > 241) and (ball_pos.x < 250) then
                 b7_ref <= NW_SE;
-            elsif (pixel_num > 249) and (pixel_num < 270) then
+            elsif (ball_pos.x > 249) and (ball_pos.x < 270) then
                 b7_ref <= E_W;
-            elsif (pixel_num > 269) and (pixel_num < 278) then
+            elsif (ball_pos.x > 269) and (ball_pos.x < 278) then
                 b7_ref <= NE_SW;
             else
                 b7_ref <= NO_REF;
@@ -1033,35 +1034,35 @@ begin
         end if;
 
         -- Ball reflections
-        if (line_num > 261)  and (line_num < 270)  then
+        if (ball_pos.y > 261)  and (ball_pos.y < 270)  then
 
-            if (pixel_num > 361) and (pixel_num < 370) then
+            if (ball_pos.x > 361) and (ball_pos.x < 370) then
                 b8_ref <= NE_SW;
-            elsif (pixel_num > 369) and (pixel_num < 390) then
+            elsif (ball_pos.x > 369) and (ball_pos.x < 390) then
                 b8_ref <= E_W;
-            elsif (pixel_num > 389) and (pixel_num < 398) then
+            elsif (ball_pos.x > 389) and (ball_pos.x < 398) then
                 b8_ref <= NW_SE;
             else
                 b8_ref <= NO_REF;
             end if;
 
-        elsif (line_num > 269)  and (line_num < 290)  then
+        elsif (ball_pos.y > 269)  and (ball_pos.y < 290)  then
 
-            if (pixel_num > 361) and (pixel_num < 370) then
+            if (ball_pos.x > 361) and (ball_pos.x < 370) then
                 b8_ref <= N_S;
-            elsif (pixel_num > 389) and (pixel_num < 398) then
+            elsif (ball_pos.x > 389) and (ball_pos.x < 398) then
                 b8_ref <= N_S;
             else
                 b8_ref <= NO_REF;
             end if;
 
-        elsif (line_num > 289)  and (line_num < 298)  then
+        elsif (ball_pos.y > 289)  and (ball_pos.y < 298)  then
 
-            if (pixel_num > 361) and (pixel_num < 370) then
+            if (ball_pos.x > 361) and (ball_pos.x < 370) then
                 b8_ref <= NW_SE;
-            elsif (pixel_num > 369) and (pixel_num < 390) then
+            elsif (ball_pos.x > 369) and (ball_pos.x < 390) then
                 b8_ref <= E_W;
-            elsif (pixel_num > 389) and (pixel_num < 398) then
+            elsif (ball_pos.x > 389) and (ball_pos.x < 398) then
                 b8_ref <= NE_SW;
             else
                 b8_ref <= NO_REF;
@@ -1090,35 +1091,35 @@ begin
         end if;
 
         -- Ball reflections
-        if (line_num > 261)  and (line_num < 270)  then
+        if (ball_pos.y > 261)  and (ball_pos.y < 270)  then
 
-            if (pixel_num > 481) and (pixel_num < 490) then
+            if (ball_pos.x > 481) and (ball_pos.x < 490) then
                 b9_ref <= NE_SW;
-            elsif (pixel_num > 489) and (pixel_num < 510) then
+            elsif (ball_pos.x > 489) and (ball_pos.x < 510) then
                 b9_ref <= E_W;
-            elsif (pixel_num > 509) and (pixel_num < 518) then
+            elsif (ball_pos.x > 509) and (ball_pos.x < 518) then
                 b9_ref <= NW_SE;
             else
                 b9_ref <= NO_REF;
             end if;
 
-        elsif (line_num > 269)  and (line_num < 290)  then
+        elsif (ball_pos.y > 269)  and (ball_pos.y < 290)  then
 
-            if (pixel_num > 481) and (pixel_num < 490) then
+            if (ball_pos.x > 481) and (ball_pos.x < 490) then
                 b9_ref <= N_S;
-            elsif (pixel_num > 389) and (pixel_num < 398) then
+            elsif (ball_pos.x > 389) and (ball_pos.x < 398) then
                 b9_ref <= N_S;
             else
                 b9_ref <= NO_REF;
             end if;
 
-        elsif (line_num > 289)  and (line_num < 298)  then
+        elsif (ball_pos.y > 289)  and (ball_pos.y < 298)  then
 
-            if (pixel_num > 481) and (pixel_num < 490) then
+            if (ball_pos.x > 481) and (ball_pos.x < 490) then
                 b9_ref <= NW_SE;
-            elsif (pixel_num > 489) and (pixel_num < 510) then
+            elsif (ball_pos.x > 489) and (ball_pos.x < 510) then
                 b9_ref <= E_W;
-            elsif (pixel_num > 509) and (pixel_num < 518) then
+            elsif (ball_pos.x > 509) and (ball_pos.x < 518) then
                 b9_ref <= NE_SW;
             else
                 b9_ref <= NO_REF;
