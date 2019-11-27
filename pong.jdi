@@ -1,8 +1,16 @@
 <sld_project_info>
   <project>
-    <hash md5_digest_80b="36aa30e68c088a49bb1f"/>
+    <hash md5_digest_80b="74a13ebe7261f02347aa"/>
   </project>
   <file_info>
     <file device="10M50DAF484C7G" path="pong.sof" usercode="0xFFFFFFFF"/>
   </file_info>
+  <sld_infos>
+    <sld_info hpath="adc:adc_inst" name="adc_inst">
+      <assignment_values>
+        <assignment_value text="QSYS_NAME adc HAS_SOPCINFO 1 GENERATION_ID 1574820699"/>
+      </assignment_values>
+      <parameters/>
+    </sld_info>
+  </sld_infos>
 </sld_project_info>

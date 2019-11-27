@@ -1,5 +1,5 @@
 Flow report for pong
-Mon Nov 25 19:49:32 2019
+Wed Nov 27 02:13:24 2019
 Quartus Prime Version 18.1.0 Build 625 09/12/2018 SJ Lite Edition
 
 
@@ -40,24 +40,24 @@ refer to the applicable agreement for further details.
 +----------------------------------------------------------------------------------+
 ; Flow Summary                                                                     ;
 +------------------------------------+---------------------------------------------+
-; Flow Status                        ; Successful - Mon Nov 25 19:49:28 2019       ;
+; Flow Status                        ; Successful - Wed Nov 27 02:13:19 2019       ;
 ; Quartus Prime Version              ; 18.1.0 Build 625 09/12/2018 SJ Lite Edition ;
 ; Revision Name                      ; pong                                        ;
 ; Top-level Entity Name              ; PONG                                        ;
 ; Family                             ; MAX 10                                      ;
 ; Device                             ; 10M50DAF484C7G                              ;
 ; Timing Models                      ; Final                                       ;
-; Total logic elements               ; 1,517 / 49,760 ( 3 % )                      ;
-;     Total combinational functions  ; 1,515 / 49,760 ( 3 % )                      ;
-;     Dedicated logic registers      ; 133 / 49,760 ( < 1 % )                      ;
-; Total registers                    ; 133                                         ;
+; Total logic elements               ; 2,125 / 49,760 ( 4 % )                      ;
+;     Total combinational functions  ; 2,102 / 49,760 ( 4 % )                      ;
+;     Dedicated logic registers      ; 241 / 49,760 ( < 1 % )                      ;
+; Total registers                    ; 241                                         ;
 ; Total pins                         ; 17 / 360 ( 5 % )                            ;
 ; Total virtual pins                 ; 0                                           ;
 ; Total memory bits                  ; 0 / 1,677,312 ( 0 % )                       ;
 ; Embedded Multiplier 9-bit elements ; 0 / 288 ( 0 % )                             ;
-; Total PLLs                         ; 1 / 4 ( 25 % )                              ;
+; Total PLLs                         ; 2 / 4 ( 50 % )                              ;
 ; UFM blocks                         ; 0 / 1 ( 0 % )                               ;
-; ADC blocks                         ; 0 / 2 ( 0 % )                               ;
+; ADC blocks                         ; 1 / 2 ( 50 % )                              ;
 +------------------------------------+---------------------------------------------+
 
 
@@ -66,31 +66,42 @@ refer to the applicable agreement for further details.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 11/25/2019 19:48:52 ;
+; Start date & time ; 11/27/2019 02:12:37 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; pong                ;
 +-------------------+---------------------+
 
 
-+-------------------------------------------------------------------------------------------------------------------------+
-; Flow Non-Default Global Settings                                                                                        ;
-+-------------------------------------+----------------------------------------+---------------+-------------+------------+
-; Assignment Name                     ; Value                                  ; Default Value ; Entity Name ; Section Id ;
-+-------------------------------------+----------------------------------------+---------------+-------------+------------+
-; COMPILER_SIGNATURE_ID               ; 10995770589206.157473653213232         ; --            ; --          ; --         ;
-; MAX_CORE_JUNCTION_TEMP              ; 85                                     ; --            ; --          ; --         ;
-; MIN_CORE_JUNCTION_TEMP              ; 0                                      ; --            ; --          ; --         ;
-; MISC_FILE                           ; pll.bsf                                ; --            ; --          ; --         ;
-; MISC_FILE                           ; pll_inst.vhd                           ; --            ; --          ; --         ;
-; MISC_FILE                           ; pll.inc                                ; --            ; --          ; --         ;
-; MISC_FILE                           ; pll.cmp                                ; --            ; --          ; --         ;
-; MISC_FILE                           ; pll.ppf                                ; --            ; --          ; --         ;
-; PARTITION_COLOR                     ; -- (Not supported for targeted family) ; --            ; --          ; Top        ;
-; PARTITION_FITTER_PRESERVATION_LEVEL ; -- (Not supported for targeted family) ; --            ; --          ; Top        ;
-; PARTITION_NETLIST_TYPE              ; -- (Not supported for targeted family) ; --            ; --          ; Top        ;
-; POWER_BOARD_THERMAL_MODEL           ; None (CONSERVATIVE)                    ; --            ; --          ; --         ;
-; POWER_PRESET_COOLING_SOLUTION       ; 23 MM HEAT SINK WITH 200 LFPM AIRFLOW  ; --            ; --          ; --         ;
-+-------------------------------------+----------------------------------------+---------------+-------------+------------+
++----------------------------------------------------------------------------------------------------------------------------------------+
+; Flow Non-Default Global Settings                                                                                                       ;
++-------------------------------------+-------------------------------------------------------+---------------+-------------+------------+
+; Assignment Name                     ; Value                                                 ; Default Value ; Entity Name ; Section Id ;
++-------------------------------------+-------------------------------------------------------+---------------+-------------+------------+
+; COMPILER_SIGNATURE_ID               ; 10995770589206.157484595701624                        ; --            ; --          ; --         ;
+; MAX_CORE_JUNCTION_TEMP              ; 85                                                    ; --            ; --          ; --         ;
+; MIN_CORE_JUNCTION_TEMP              ; 0                                                     ; --            ; --          ; --         ;
+; MISC_FILE                           ; adc/synthesis/../adc.cmp                              ; --            ; --          ; --         ;
+; MISC_FILE                           ; adc/synthesis/../../adc.qsys                          ; --            ; --          ; --         ;
+; MISC_FILE                           ; pll.bsf                                               ; --            ; --          ; --         ;
+; MISC_FILE                           ; pll_inst.vhd                                          ; --            ; --          ; --         ;
+; MISC_FILE                           ; pll.inc                                               ; --            ; --          ; --         ;
+; MISC_FILE                           ; pll.cmp                                               ; --            ; --          ; --         ;
+; MISC_FILE                           ; pll.ppf                                               ; --            ; --          ; --         ;
+; MISC_FILE                           ; pll_adc.bsf                                           ; --            ; --          ; --         ;
+; MISC_FILE                           ; pll_adc_inst.vhd                                      ; --            ; --          ; --         ;
+; MISC_FILE                           ; pll_adc.inc                                           ; --            ; --          ; --         ;
+; MISC_FILE                           ; pll_adc.cmp                                           ; --            ; --          ; --         ;
+; MISC_FILE                           ; pll_adc.ppf                                           ; --            ; --          ; --         ;
+; PARTITION_COLOR                     ; -- (Not supported for targeted family)                ; --            ; --          ; Top        ;
+; PARTITION_FITTER_PRESERVATION_LEVEL ; -- (Not supported for targeted family)                ; --            ; --          ; Top        ;
+; PARTITION_NETLIST_TYPE              ; -- (Not supported for targeted family)                ; --            ; --          ; Top        ;
+; POWER_BOARD_THERMAL_MODEL           ; None (CONSERVATIVE)                                   ; --            ; --          ; --         ;
+; POWER_PRESET_COOLING_SOLUTION       ; 23 MM HEAT SINK WITH 200 LFPM AIRFLOW                 ; --            ; --          ; --         ;
+; SLD_FILE                            ; adc/synthesis/adc.debuginfo                           ; --            ; --          ; --         ;
+; SLD_INFO                            ; QSYS_NAME adc HAS_SOPCINFO 1 GENERATION_ID 1574820699 ; --            ; adc         ; --         ;
+; SOPCINFO_FILE                       ; adc/synthesis/../../adc.sopcinfo                      ; --            ; --          ; --         ;
+; SYNTHESIS_ONLY_QIP                  ; On                                                    ; --            ; --          ; --         ;
++-------------------------------------+-------------------------------------------------------+---------------+-------------+------------+
 
 
 +--------------------------------------------------------------------------------------------------------------------------+
@@ -98,11 +109,11 @@ refer to the applicable agreement for further details.
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name          ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis ; 00:00:17     ; 1.0                     ; 4829 MB             ; 00:00:29                           ;
-; Fitter               ; 00:00:14     ; 1.2                     ; 5653 MB             ; 00:00:22                           ;
-; Assembler            ; 00:00:03     ; 1.0                     ; 4700 MB             ; 00:00:03                           ;
-; Timing Analyzer      ; 00:00:03     ; 1.5                     ; 4837 MB             ; 00:00:05                           ;
-; Total                ; 00:00:37     ; --                      ; --                  ; 00:00:59                           ;
+; Analysis & Synthesis ; 00:00:19     ; 1.0                     ; 4841 MB             ; 00:00:32                           ;
+; Fitter               ; 00:00:17     ; 1.2                     ; 5663 MB             ; 00:00:28                           ;
+; Assembler            ; 00:00:03     ; 1.0                     ; 4694 MB             ; 00:00:03                           ;
+; Timing Analyzer      ; 00:00:04     ; 1.6                     ; 4846 MB             ; 00:00:05                           ;
+; Total                ; 00:00:43     ; --                      ; --                  ; 00:01:08                           ;
 +----------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 

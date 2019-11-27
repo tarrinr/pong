@@ -14,9 +14,9 @@ vga_hor_state.vga_hor_C 0 1 0 1
 vga_hor_state.vga_hor_D 1 0 0 1 
 
 State Machine - |PONG|ball_dir
-Name ball_dir.NNW ball_dir.NW ball_dir.WNW ball_dir.W ball_dir.WSW ball_dir.SW ball_dir.SSW ball_dir.SSE ball_dir.SE ball_dir.ESE ball_dir.E ball_dir.ENE ball_dir.NE ball_dir.NO_DIR ball_dir.NNE 
-ball_dir.NNE 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-ball_dir.NO_DIR 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 
+Name ball_dir.NNW ball_dir.NW ball_dir.WNW ball_dir.W ball_dir.WSW ball_dir.SW ball_dir.SSW ball_dir.SSE ball_dir.SE ball_dir.ESE ball_dir.E ball_dir.ENE ball_dir.NE ball_dir.NNE ball_dir.NO_DIR 
+ball_dir.NO_DIR 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+ball_dir.NNE 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 
 ball_dir.NE 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 
 ball_dir.ENE 0 0 0 0 0 0 0 0 0 0 0 1 0 0 1 
 ball_dir.E 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 
@@ -31,10 +31,28 @@ ball_dir.WNW 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1
 ball_dir.NW 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 
 ball_dir.NNW 1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 
 
+State Machine - |PONG|\ball:start_dir
+Name \ball:start_dir.NNW \ball:start_dir.NW \ball:start_dir.WNW \ball:start_dir.NO_DIR \ball:start_dir.WSW \ball:start_dir.SW \ball:start_dir.SSW \ball:start_dir.SSE \ball:start_dir.SE \ball:start_dir.ESE \ball:start_dir.E \ball:start_dir.ENE \ball:start_dir.NE \ball:start_dir.NNE \ball:start_dir.W 
+\ball:start_dir.W 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+\ball:start_dir.NNE 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 
+\ball:start_dir.NE 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 
+\ball:start_dir.ENE 0 0 0 0 0 0 0 0 0 0 0 1 0 0 1 
+\ball:start_dir.E 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 
+\ball:start_dir.ESE 0 0 0 0 0 0 0 0 0 1 0 0 0 0 1 
+\ball:start_dir.SE 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 
+\ball:start_dir.SSE 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1 
+\ball:start_dir.SSW 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1 
+\ball:start_dir.SW 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 
+\ball:start_dir.WSW 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1 
+\ball:start_dir.NO_DIR 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 
+\ball:start_dir.WNW 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 
+\ball:start_dir.NW 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 
+\ball:start_dir.NNW 1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 
+
 State Machine - |PONG|\ball:new_dir
-Name \ball:new_dir.NNW \ball:new_dir.NW \ball:new_dir.WNW \ball:new_dir.W \ball:new_dir.WSW \ball:new_dir.SW \ball:new_dir.SSW \ball:new_dir.SSE \ball:new_dir.SE \ball:new_dir.ESE \ball:new_dir.E \ball:new_dir.ENE \ball:new_dir.NE \ball:new_dir.NO_DIR \ball:new_dir.NNE 
-\ball:new_dir.NNE 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
-\ball:new_dir.NO_DIR 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 
+Name \ball:new_dir.NNW \ball:new_dir.NW \ball:new_dir.WNW \ball:new_dir.W \ball:new_dir.WSW \ball:new_dir.SW \ball:new_dir.SSW \ball:new_dir.SSE \ball:new_dir.SE \ball:new_dir.ESE \ball:new_dir.E \ball:new_dir.ENE \ball:new_dir.NE \ball:new_dir.NNE \ball:new_dir.NO_DIR 
+\ball:new_dir.NO_DIR 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+\ball:new_dir.NNE 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 
 \ball:new_dir.NE 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 
 \ball:new_dir.ENE 0 0 0 0 0 0 0 0 0 0 0 1 0 0 1 
 \ball:new_dir.E 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 
@@ -48,3 +66,27 @@ Name \ball:new_dir.NNW \ball:new_dir.NW \ball:new_dir.WNW \ball:new_dir.W \ball:
 \ball:new_dir.WNW 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 
 \ball:new_dir.NW 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 
 \ball:new_dir.NNW 1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 
+
+State Machine - |PONG|adc:adc_inst|adc_modular_adc_0:modular_adc_0|altera_modular_adc_control:control_internal|altera_modular_adc_control_fsm:u_control_fsm|ctrl_state
+Name ctrl_state.SYNC1 ctrl_state.AVRG_CNT ctrl_state.PUTRESP_PEND ctrl_state.WAIT_PEND_DLY1 ctrl_state.WAIT_PEND ctrl_state.PUTRESP_DLY3 ctrl_state.PUTRESP_DLY2 ctrl_state.PUTRESP_DLY1 ctrl_state.PUTRESP ctrl_state.CONV_DLY1 ctrl_state.CONV ctrl_state.PRE_CONV ctrl_state.GETCMD_W ctrl_state.GETCMD ctrl_state.WAIT ctrl_state.PWRUP_SOC ctrl_state.PWRUP_CH ctrl_state.PWRDWN_DONE ctrl_state.PWRDWN_TSEN ctrl_state.PWRDWN ctrl_state.IDLE 
+ctrl_state.IDLE 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+ctrl_state.PWRDWN 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 
+ctrl_state.PWRDWN_TSEN 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 1 
+ctrl_state.PWRDWN_DONE 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 1 
+ctrl_state.PWRUP_CH 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 
+ctrl_state.PWRUP_SOC 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 1 
+ctrl_state.WAIT 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 
+ctrl_state.GETCMD 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 1 
+ctrl_state.GETCMD_W 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 1 
+ctrl_state.PRE_CONV 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 1 
+ctrl_state.CONV 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 1 
+ctrl_state.CONV_DLY1 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 1 
+ctrl_state.PUTRESP 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 
+ctrl_state.PUTRESP_DLY1 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 1 
+ctrl_state.PUTRESP_DLY2 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 1 
+ctrl_state.PUTRESP_DLY3 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 
+ctrl_state.WAIT_PEND 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 
+ctrl_state.WAIT_PEND_DLY1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 
+ctrl_state.PUTRESP_PEND 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 
+ctrl_state.AVRG_CNT 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 
+ctrl_state.SYNC1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 
