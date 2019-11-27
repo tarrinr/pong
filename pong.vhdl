@@ -60,7 +60,7 @@ architecture RTL of PONG is
     -- Constants
     --
 
-    constant INIT_POS : position   := (x => 230, y => 90);
+    constant INIT_POS : position   := (x => 100, y => 100);
     constant NO_REF   : reflection := "000";
     constant N_S      : reflection := "001";
     constant NNE_SSW  : reflection := "010";
@@ -421,12 +421,12 @@ begin
                 g2       <= new_g2;
 
             else
-                new_dir := NNE;
+                new_dir := SSW;
                 new_pos := INIT_POS;
                 new_g1  := 0;
                 new_g2  := 0;
                 ball_pos   <= INIT_POS;
-                ball_dir   <= NNE;
+                ball_dir   <= SSW;
                 g1         <= 0;
                 g2         <= 0;
             end if;
